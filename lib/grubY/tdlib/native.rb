@@ -41,18 +41,26 @@ module GrubY
           if Gem.win_platform?
             [
               "tdjson.dll",
+              "vendor/tdlib/windows/tdjson.dll",
+              "vendor/tdlib/win/tdjson.dll",
+              "vendor/tdlib/tdjson.dll",
               "C:/tdlib/bin/tdjson.dll",
               "C:/Program Files/TDLib/bin/tdjson.dll"
             ]
           elsif RUBY_PLATFORM.include?("darwin")
             [
               "libtdjson.dylib",
+              "vendor/tdlib/macos/libtdjson.dylib",
+              "vendor/tdlib/darwin/libtdjson.dylib",
+              "vendor/tdlib/libtdjson.dylib",
               "/usr/local/lib/libtdjson.dylib",
               "/opt/homebrew/lib/libtdjson.dylib"
             ]
           else
             [
               "libtdjson.so",
+              "vendor/tdlib/linux/libtdjson.so",
+              "vendor/tdlib/libtdjson.so",
               "/usr/lib/libtdjson.so",
               "/usr/local/lib/libtdjson.so"
             ]
