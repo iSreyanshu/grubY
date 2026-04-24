@@ -75,6 +75,21 @@ Provide via:
 - `TDJSON_PATH` env var
 - `tdjson_path:` constructor argument
 
+### GitHub Build Se TDJSON Kaise Lo
+
+1. Tag push karo (example: `v0.2.1`) ya manually `Release TDJSON` workflow run karo.
+2. GitHub Release assets se apne OS ka zip download karo:
+   - `tdjson-linux-x64.zip`
+   - `tdjson-macos-x64.zip`
+   - `tdjson-windows-x64.zip`
+3. Extract karke repo me copy karo:
+   - Linux: `vendor/tdlib/linux/libtdjson.so`
+   - macOS: `vendor/tdlib/macos/libtdjson.dylib`
+   - Windows: `vendor/tdlib/windows/tdjson.dll`
+4. Optional: `TDJSON_PATH` set karo agar custom path use karna hai.
+
+`GrubY::TDLib::Native` ab `vendor/tdlib/...` paths se bhi auto-detect karta hai.
+
 ## Examples
 
 - `example/bot.rb`
