@@ -120,6 +120,19 @@ client.run</code></pre>
         </ul>
       </section>
 
+      <section class="card" style="margin-top: 16px;">
+        <h2>GitHub TDJSON Setup</h2>
+        <ul>
+          <li>Run <code>Release TDJSON</code> workflow (or push a <code>v*</code> tag).</li>
+          <li>Download release asset for your OS and extract library file.</li>
+          <li>Place it in:</li>
+          <li><code>vendor/tdlib/linux/libtdjson.so</code> (Linux)</li>
+          <li><code>vendor/tdlib/macos/libtdjson.dylib</code> (macOS)</li>
+          <li><code>vendor/tdlib/windows/tdjson.dll</code> (Windows)</li>
+          <li>Or set <code>TDJSON_PATH</code> to full custom path.</li>
+        </ul>
+      </section>
+
       <p class="footer">
         Full markdown docs: <a href="./DOCS.md">DOCS.md</a>
       </p>
