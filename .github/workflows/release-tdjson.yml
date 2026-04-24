@@ -1,0 +1,98 @@
+name: Release TDJSON
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Clone TDLib
+        shell: bash
+        run: |
+          git clone --depth=1 https://github.com/tdlib/td.git td
+
+      - name: Setup Linux deps
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ zlib1g-dev libssl-dev gperf
+
+      - name: Setup macOS deps
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          brew update
+          brew install cmake openssl gperf
+
+      - name: Setup Windows deps
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+          choco install strawberryperl -y
+          choco install gperf -y
+          choco install zlib -y
+
+      - name: Configure TDLib (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cmake -S td -B td/build -DCMAKE_BUILD_TYPE=Release -DTD_ENABLE_DOTNET=OFF
+
+      - name: Configure TDLib (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $gperf = (Get-Command gperf -ErrorAction SilentlyContinue).Source
+          if (-not $gperf) {
+            throw "gperf not found on PATH"
+          }
+          cmake -S td -B td/build -DTD_ENABLE_DOTNET=OFF -DGPERF_EXECUTABLE="$gperf"
+
+      - name: Build TDLib
+        shell: bash
+        run: |
+          cmake --build td/build --config Release --parallel
+
+      - name: Package TDJSON (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mkdir -p dist
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            cp td/build/libtdjson.so dist/libtdjson.so
+            cd dist && zip tdjson-linux-x64.zip libtdjson.so
+          else
+            cp td/build/libtdjson.dylib dist/libtdjson.dylib
+            cd dist && zip tdjson-macos-x64.zip libtdjson.dylib
+          fi
+
+      - name: Package TDJSON (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item td/build/Release/tdjson.dll dist/tdjson.dll -Force
+          Compress-Archive -Path dist/tdjson.dll -DestinationPath dist/tdjson-windows-x64.zip -Force
+
+      - name: Upload Release Assets
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.zip
