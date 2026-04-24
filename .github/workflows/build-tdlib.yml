@@ -44,11 +44,24 @@ jobs:
         run: |
           choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
           choco install strawberryperl -y
+          choco install gperf -y
+          choco install zlib -y
 
-      - name: Configure TDLib
+      - name: Configure TDLib (Linux/macOS)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           cmake -S td -B td/build -DCMAKE_BUILD_TYPE=Release -DTD_ENABLE_DOTNET=OFF
+
+      - name: Configure TDLib (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $gperf = (Get-Command gperf -ErrorAction SilentlyContinue).Source
+          if (-not $gperf) {
+            throw "gperf not found on PATH after install"
+          }
+          cmake -S td -B td/build -DTD_ENABLE_DOTNET=OFF -DGPERF_EXECUTABLE="$gperf"
 
       - name: Build TDLib
         shell: bash
