@@ -9,11 +9,14 @@ on:
 
 jobs:
   build:
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: 2
 
     steps:
       - name: Checkout
@@ -73,7 +76,7 @@ jobs:
       - name: Build TDLib
         shell: bash
         run: |
-          cmake --build td/build --config Release --parallel
+          cmake --build td/build --config Release --parallel 2
 
       - name: Upload TDLib artifacts
         uses: actions/upload-artifact@v4
