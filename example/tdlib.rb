@@ -2,8 +2,8 @@ require_relative "../lib/grubY"
 
 # Set these in your environment before running:
 # TD_API_ID=12345
-# TD_API_HASH=your_api_hash
-# TD_BOT_TOKEN=12345:abc...   (or use TD_PHONE for user auth)
+# TD_API_HASH=xxxxx
+# TD_BOT_TOKEN=12345:abc..   (or use TD_PHONE for user auth)
 # TDJSON_PATH=/path/to/libtdjson.so|dylib|dll
 
 api_id = ENV["TD_API_ID"]&.to_i
@@ -72,7 +72,6 @@ client.on_message do |message|
 end
 
 client.finalizer do |_update|
-  # place for metrics/telemetry hooks
 end
 
 client.run
