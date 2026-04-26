@@ -134,6 +134,31 @@ bridge.pytgcalls_methods
 bridge.ntgcalls_methods
 ```
 
+### Non-Interactive Auth Flow (Modern)
+
+Use this when you don't have `TD_SESSION_STRING` yet:
+
+```ruby
+bridge = GrubY::NTgCalls::Bridge.new(
+  api_id: ENV.fetch("TD_API_ID").to_i,
+  api_hash: ENV.fetch("TD_API_HASH"),
+  auto_login: false,
+  start_calls: false
+).start
+
+status = bridge.auth_status
+unless status["authorized"]
+  sent = bridge.auth_send_code(phone: "+91XXXXXXXXXX")
+  # Ask user for code from Telegram App/SMS
+  bridge.auth_sign_in(phone: "+91XXXXXXXXXX", code: "12345", phone_code_hash: sent["phone_code_hash"])
+end
+
+session = bridge.auth_export_session
+puts session["session_string"] # Store as TD_SESSION_STRING
+
+bridge.start_calls
+```
+
 Note:
 - `ntgcalls` media engine alone is not enough to connect Telegram calls.
 - Telegram signaling/auth still needs an MTProto client (here: Telethon through py-tgcalls).
