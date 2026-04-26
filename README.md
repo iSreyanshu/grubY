@@ -46,15 +46,13 @@ client = GrubY::TDLib::Client.new(
 )
 
 client.initializer do |update|
-  # runs before normal handlers
 end
 
 client.on_message do |message|
-  # message object from updateNewMessage
+  # Message object from updateNewMessage
 end
 
 client.finalizer do |update|
-  # always runs after handler pipeline
 end
 
 client.on("clientReady") { puts "TDLib ready" }
