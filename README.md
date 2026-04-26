@@ -72,8 +72,6 @@ Provide via:
 - `TDJSON_PATH` env var
 - `tdjson_path:` constructor argument
 
-### GitHub Build Se TDJSON Kaise Lo
-
 ## NTgCalls VC Bridge
 
 GrubY includes a bridge for Telegram voice chats via `py-tgcalls` and `ntgcalls`.
@@ -140,21 +138,23 @@ Note:
 - `ntgcalls` media engine alone is not enough to connect Telegram calls.
 - Telegram signaling/auth still needs an MTProto client (here: Telethon through py-tgcalls).
 
-1. Tag push karo (example: `v0.2.1`) ya manually `Release TDJSON` workflow run karo.
-2. GitHub Release assets se apne OS ka zip download karo:
+Steps to Setup TDJSON:
+
+1. Push a tag (example: `v0.2.1`) or manually run the `Release TDJSON` workflow.
+2. Download the zip for your OS from the GitHub Release assets:
    - `tdjson-linux-x64.zip`
    - `tdjson-macos-x64.zip`
    - `tdjson-windows-x64.zip`
-3. Extract karke repo me copy karo:
-   - Linux: `vendor/tdlib/linux/libtdjson.so`
-   - macOS: `vendor/tdlib/macos/libtdjson.dylib`
-   - Windows: `vendor/tdlib/windows/tdjson.dll`
-4. Optional: `TDJSON_PATH` set karo agar custom path use karna hai.
+3. Extract and copy them into the repo:
+   - `Linux: vendor/tdlib/linux/libtdjson.so`
+   - `macOS: vendor/tdlib/macos/libtdjson.dylib`
+   - `Windows: vendor/tdlib/windows/tdjson.dll`
+4. Optional: Set `TDJSON_PATH` if you want to use a custom path.
 
-`GrubY::TDLib::Native` ab `vendor/tdlib/...` paths se bhi auto-detect karta hai.
+Note: `GrubY::TDLib::Native` now also auto-detects from `vendor/tdlib/...` paths.
 
-## Examples
+## Examples:
 
 - `example/bot.rb`
 - `example/tdlib.rb`
-- `example/userbot.rb` (phone/QR login + outgoing `!hi` edit flow)
+- `example/userbot.rb` (phone/QR login)
