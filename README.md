@@ -1,6 +1,6 @@
-# GrubY
+# grubY
 
-Modern Ruby Telegram toolkit with:
+A Ruby Telegram toolkit with:
 
 - `GrubY::Client` (Bot API runtime)
 - `GrubY::TDLib::Client` (tdjson native runtime, pytdbot-inspired)
