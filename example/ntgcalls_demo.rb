@@ -6,8 +6,8 @@ require "json"
 # VC_CHAT_ID=-1001234567890 VC_AUDIO=./song.mp3 ruby example/ntgcalls_demo.rb
 #
 # Notes:
-# - VC_AUDIO can be a local path or direct media URL.
-# - For user accounts, provide TD_SESSION_STRING (Telethon String Ssession).
+# VC_AUDIO can be a local path or direct media URL.
+# For user accounts, provide TD_SESSION_STRING (Telethon String Ssession).
 
 api_id = ENV["TD_API_ID"]&.to_i
 api_hash = ENV["TD_API_HASH"]
