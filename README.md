@@ -138,7 +138,7 @@ Note:
 - `ntgcalls` media engine alone is not enough to connect Telegram calls.
 - Telegram signaling/auth still needs an MTProto client (here: Telethon through py-tgcalls).
 
-Steps to Setup TDJSON:
+## Steps to Setup TDJSON:
 
 1. Push a tag (example: `v0.2.1`) or manually run the `Release TDJSON` workflow.
 2. Download the zip for your OS from the GitHub Release assets:
