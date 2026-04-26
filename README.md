@@ -74,17 +74,15 @@ Provide via:
 
 ### GitHub Build Se TDJSON Kaise Lo
 
-## NTgCalls Voice Chat Bridge (Join VC + Play Audio)
+## NTgCalls VC Bridge
 
-GrubY includes a bridge for Telegram voice chats via `py-tgcalls` + `ntgcalls`.
-Backend is now `Telethon` (no Pyrogram).
+GrubY includes a bridge for Telegram voice chats via `py-tgcalls` and `ntgcalls`.
+`Telethon` based backend.
 
-Files:
+example:
 
-- `lib/grubY/ntgcalls.rb`
-- `lib/grubY/ntgcalls/bridge.py`
 - `example/ntgcalls_demo.rb`
-- `example/requirements-ntgcalls.txt`
+- `example/requirements.txt`
 
 ### Install Python deps
 
