@@ -19,6 +19,8 @@ module GrubY
         session_string: nil,
         bot_token: nil,
         workdir: "storage/ntgcalls",
+        auto_login: true,
+        start_calls: true,
         python_bin: ENV.fetch("GRUBY_NTGCALLS_PYTHON", "python"),
         script_path: File.expand_path("ntgcalls/bridge.py", __dir__)
       )
@@ -28,7 +30,9 @@ module GrubY
           session_name: session_name,
           session_string: session_string,
           bot_token: bot_token,
-          workdir: workdir
+          workdir: workdir,
+          auto_login: auto_login,
+          start_calls: start_calls
         }
         @python_bin = python_bin
         @script_path = script_path
@@ -110,6 +114,47 @@ module GrubY
 
       def get_participants(chat_id:)
         request!("get_participants", { chat_id: chat_id })
+      end
+
+      def start_calls
+        request!("start_calls", {})
+      end
+
+      def auth_status
+        request!("auth_status", {})
+      end
+
+      def auth_send_code(phone:, force_sms: false)
+        request!("auth_send_code", { phone: phone, force_sms: force_sms })
+      end
+
+      def auth_sign_in(phone: nil, code: nil, password: nil, bot_token: nil, phone_code_hash: nil)
+        request!(
+          "auth_sign_in",
+          {
+            phone: phone,
+            code: code,
+            password: password,
+            bot_token: bot_token,
+            phone_code_hash: phone_code_hash
+          }
+        )
+      end
+
+      def auth_export_session
+        request!("auth_export_session", {})
+      end
+
+      def tl_pretty(obj:, indent: nil)
+        request!("tl_pretty", { obj: obj, indent: indent })
+      end
+
+      def tl_serialize_bytes(data:)
+        request!("tl_serialize_bytes", { data: data })
+      end
+
+      def tl_serialize_datetime(value:)
+        request!("tl_serialize_datetime", { value: value })
       end
 
       def call(method_name, args: [], kwargs: {})
