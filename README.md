@@ -94,7 +94,7 @@ python -m pip install -r example/requirements.txt
 
 - `TD_API_ID` (required)
 - `TD_API_HASH` (required)
-- `TD_SESSION_STRING` (Telethon string session; recommended)
+- `TD_SESSION_STRING` (Telethon String Session; recommended)
 - `VC_CHAT_ID` (required for demo)
 - `VC_AUDIO` (required; local file path or URL)
 
@@ -103,13 +103,6 @@ python -m pip install -r example/requirements.txt
 ```bash
 ruby example/ntgcalls_demo.rb
 ```
-
-The demo will:
-
-1. Start the NTgCalls bridge
-2. Join/start VC in `VC_CHAT_ID`
-3. Play `VC_AUDIO`
-4. Accept runtime commands: `pause`, `resume`, `mute`, `unmute`, `participants`, `leave`, `quit`
 
 ### Full Method Access
 
@@ -120,16 +113,16 @@ bridge.call("record", args: [chat_id, "recorded.raw"])
 bridge.call("time", args: [chat_id])
 ```
 
-PyTgCalls-like Ruby usage via alias:
+Ruby usage via alias:
 
 ```ruby
 rbt = GrubY::NTgCalls::RBtgCalls.new(api_id: ..., api_hash: ..., session_string: ...)
 rbt.start
-rbt.play(chat_id: -100123, stream: "song.mp3")
-rbt.pause(-100123)
+rbt.play(chat_id: -100123456789, stream: "song.mp3")
+rbt.pause(-100123456789)
 ```
 
-Direct NTgCalls binding methods:
+NTgCalls binding methods:
 
 ```ruby
 bridge.ntg_call("calls")
