@@ -77,7 +77,7 @@ Provide via:
 ## NTgCalls VC Bridge
 
 GrubY includes a bridge for Telegram voice chats via `py-tgcalls` and `ntgcalls`.
-`Telethon` based backend.
+Used `Telethon` based backend!
 
 example:
 
