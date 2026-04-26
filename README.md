@@ -1,8 +1,8 @@
 ## GrubY
 
-A Ruby Telegram toolkit with:
+A Ruby Telegram Farmwork with:
 
-- `GrubY::Client` (Bot API runtime)
+- `GrubY::Client` (BotAPI runtime)
 - `GrubY::TDLib::Client` (tdjson native runtime, pytdbot-inspired)
 
 ## Install
@@ -23,7 +23,7 @@ bundle install
 - Multi-client support utility: `GrubY::TDLib::ClientManager`
 - CI workflows for TDLib build and gem publish
 
-## Bot API Quick Start
+## BotAPI Quick Start
 
 ```ruby
 require_relative "lib/grubY"
