@@ -77,6 +77,81 @@ Provide via:
 
 ### GitHub Build Se TDJSON Kaise Lo
 
+## NTgCalls Voice Chat Bridge (Join VC + Play Audio)
+
+GrubY includes a bridge for Telegram voice chats via `py-tgcalls` + `ntgcalls`.
+Backend is now `Telethon` (no Pyrogram).
+
+Files:
+
+- `lib/grubY/ntgcalls.rb`
+- `lib/grubY/ntgcalls/bridge.py`
+- `example/ntgcalls_demo.rb`
+- `example/requirements-ntgcalls.txt`
+
+### Install Python deps
+
+```bash
+python -m pip install -r example/requirements-ntgcalls.txt
+```
+
+### Environment
+
+- `TD_API_ID` (required)
+- `TD_API_HASH` (required)
+- `TD_SESSION_STRING` (Telethon string session; recommended)
+- `VC_CHAT_ID` (required for demo)
+- `VC_AUDIO` (required; local file path or URL)
+
+### Run Demo
+
+```bash
+ruby example/ntgcalls_demo.rb
+```
+
+The demo will:
+
+1. Start the NTgCalls bridge
+2. Join/start VC in `VC_CHAT_ID`
+3. Play `VC_AUDIO`
+4. Accept runtime commands: `pause`, `resume`, `mute`, `unmute`, `participants`, `leave`, `quit`
+
+### Full Method Access
+
+Use `GrubY::NTgCalls::Bridge#call` for additional py-tgcalls methods:
+
+```ruby
+bridge.call("record", args: [chat_id, "recorded.raw"])
+bridge.call("time", args: [chat_id])
+```
+
+PyTgCalls-like Ruby usage via alias:
+
+```ruby
+rbt = GrubY::NTgCalls::RBtgCalls.new(api_id: ..., api_hash: ..., session_string: ...)
+rbt.start
+rbt.play(chat_id: -100123, stream: "song.mp3")
+rbt.pause(-100123)
+```
+
+Direct NTgCalls binding methods:
+
+```ruby
+bridge.ntg_call("calls")
+bridge.ntg_call("cpu_usage")
+```
+
+Method discovery:
+
+```ruby
+bridge.pytgcalls_methods
+bridge.ntgcalls_methods
+```
+
+Note:
+- `ntgcalls` media engine alone is not enough to connect Telegram calls.
+- Telegram signaling/auth still needs an MTProto client (here: Telethon through py-tgcalls).
+
 1. Tag push karo (example: `v0.2.1`) ya manually `Release TDJSON` workflow run karo.
 2. GitHub Release assets se apne OS ka zip download karo:
    - `tdjson-linux-x64.zip`
