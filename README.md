@@ -21,7 +21,6 @@ bundle install
 - Queue workers and handler timeout support
 - Better authorization lifecycle handling
 - Multi-client support utility: `GrubY::TDLib::ClientManager`
-- Static docs page: `docs.html`
 - CI workflows for TDLib build and gem publish
 
 ## Bot API Quick Start
