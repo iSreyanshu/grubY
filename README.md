@@ -1,4 +1,4 @@
-# grubY
+# GrubY
 
 A Ruby Telegram toolkit with:
 
