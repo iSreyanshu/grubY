@@ -87,7 +87,7 @@ example:
 ### Install Python deps
 
 ```bash
-python -m pip install -r example/requirements-ntgcalls.txt
+python -m pip install -r example/requirements.txt
 ```
 
 ### Environment
