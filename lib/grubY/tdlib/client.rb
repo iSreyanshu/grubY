@@ -35,6 +35,7 @@ module GrubY
         phone_number: nil,
         bot_token: nil,
         tdjson_path: nil,
+        database_encryption_key: "",
         use_test_dc: false,
         system_language_code: "en",
         device_model: "GrubY",
@@ -52,6 +53,7 @@ module GrubY
         @files_directory = files_directory
         @phone_number = phone_number
         @bot_token = bot_token
+        @database_encryption_key = database_encryption_key.to_s
         @use_test_dc = use_test_dc
         @system_language_code = system_language_code
         @device_model = device_model
@@ -373,6 +375,11 @@ module GrubY
               system_version: @system_version,
               application_version: @application_version
             }
+          )
+        when "authorizationStateWaitEncryptionKey"
+          send_query(
+            "@type": "checkDatabaseEncryptionKey",
+            encryption_key: @database_encryption_key
           )
         when "authorizationStateWaitPhoneNumber"
           if @bot_token
