@@ -1,6 +1,6 @@
 ## GrubY
 
-A Ruby Telegram Farmwork with:
+A Ruby Telegram wrapper with TDLib:
 
 - `GrubY::Client` (BotAPI runtime)
 - `GrubY::TDLib::Client` (tdjson native runtime, pytdbot-inspired)
