@@ -1,6 +1,9 @@
 require "timeout"
 require "thread"
+require "securerandom"
 require_relative "ntgcalls/native"
+require_relative "tdlib/client"
+require_relative "tdlib/user_session"
 
 module GrubY
   module NTgCalls
@@ -174,6 +177,232 @@ module GrubY
 
           ptr.read_string
         end
+      end
+    end
+
+    class MusicBot
+      DEFAULT_AUTH_TIMEOUT = 180
+
+      def initialize(
+        td_user_session:,
+        tdjson_path: nil,
+        ntgcalls_path: nil,
+        phone_number: nil,
+        td_verbosity: 1
+      )
+        td_cfg = GrubY::TDLib::UserSession.client_kwargs(td_user_session)
+        @td = GrubY::TDLib::Client.new(
+          **td_cfg,
+          phone_number: phone_number,
+          tdjson_path: tdjson_path,
+          td_verbosity: td_verbosity,
+          workers: 2
+        )
+        @ntg = Client.new(lib_path: ntgcalls_path)
+        @joined_chat_id = nil
+        @phone_number = phone_number
+        @td.on("updateAuthorizationState") { |update| handle_auth_state(update) }
+      end
+
+      def start(timeout: DEFAULT_AUTH_TIMEOUT)
+        @td.start
+        wait_until_authorized!(timeout: timeout)
+        self
+      end
+
+      def stop
+        @ntg.close
+        @td.stop
+      end
+
+      def join_and_play(chat:, audio:, invite_hash: "")
+        chat_id = resolve_chat_id(chat)
+        input_group_call = fetch_input_group_call(chat_id)
+        local_offer = @ntg.create(chat_id: chat_id)
+        audio_source_id = deterministic_audio_source_id(chat_id)
+
+        join_response = try_join_group_call(
+          input_group_call: input_group_call,
+          local_offer: local_offer,
+          audio_source_id: audio_source_id,
+          invite_hash: invite_hash
+        )
+        remote_params = extract_join_payload(join_response)
+        raise Error, "joinGroupCall response did not contain tgcalls params" if remote_params.to_s.empty?
+
+        @ntg.connect(chat_id: chat_id, params: remote_params)
+        @ntg.play(chat_id: chat_id, stream: audio)
+        @joined_chat_id = chat_id
+
+        {
+          chat_id: chat_id,
+          offer: local_offer,
+          remote_params: remote_params
+        }
+      end
+
+      def pause
+        @ntg.pause(chat_id: joined_chat_id!)
+      end
+
+      def resume
+        @ntg.resume(chat_id: joined_chat_id!)
+      end
+
+      def mute
+        @ntg.mute(chat_id: joined_chat_id!)
+      end
+
+      def unmute
+        @ntg.unmute(chat_id: joined_chat_id!)
+      end
+
+      def stop_call
+        @ntg.stop_call(chat_id: joined_chat_id!)
+      end
+
+      def cpu_usage
+        @ntg.cpu_usage
+      end
+
+      def time
+        @ntg.time(chat_id: joined_chat_id!)
+      end
+
+      private
+
+      def joined_chat_id!
+        raise Error, "no active group call in this bot instance" if @joined_chat_id.nil?
+
+        @joined_chat_id
+      end
+
+      def wait_until_authorized!(timeout:)
+        deadline = Time.now + timeout
+        loop do
+          return true if @td.authorized?
+          raise Error, "TDLib authorization timeout" if Time.now > deadline
+          sleep 0.25
+        end
+      end
+
+      def handle_auth_state(update)
+        state = update.dig("authorization_state", "@type")
+        case state
+        when "authorizationStateWaitPhoneNumber"
+          phone = @phone_number.to_s.strip
+          phone = prompt("Enter phone number (+countrycode...): ") if phone.empty?
+          @td.send_query("@type": "setAuthenticationPhoneNumber", phone_number: phone)
+        when "authorizationStateWaitCode"
+          code = prompt("Enter Telegram login code: ")
+          @td.check_authentication_code(code)
+        when "authorizationStateWaitPassword"
+          password = prompt("Enter 2FA password: ")
+          @td.check_authentication_password(password)
+        when "authorizationStateWaitOtherDeviceConfirmation"
+          link = update.dig("authorization_state", "link")
+          warn "[NTgCalls] Open Telegram > Settings > Devices > Link Desktop Device"
+          warn "[NTgCalls] #{link}" if link
+        end
+      end
+
+      def prompt(label)
+        print label
+        STDIN.gets.to_s.strip
+      end
+
+      def resolve_chat_id(chat)
+        text = chat.to_s.strip
+        raise Error, "chat is required" if text.empty?
+
+        return text.to_i if text.match?(/\A-?\d+\z/)
+
+        username = text.start_with?("@") ? text : "@#{text}"
+        result = @td.raw!("@type": "searchPublicChat", username: username.delete_prefix("@"))
+        chat_id = result["id"].to_i
+        raise Error, "unable to resolve chat '#{chat}'" if chat_id.zero?
+
+        chat_id
+      end
+
+      def fetch_input_group_call(chat_id)
+        chat = @td.raw!("@type": "getChat", chat_id: chat_id)
+        video_chat = chat["video_chat"] || {}
+        group_call_id = video_chat["group_call_id"] || dig_group_call_id(video_chat)
+        raise Error, "no active voice chat found for chat_id=#{chat_id}" if group_call_id.to_i.zero?
+
+        access_hash = video_chat["group_call_access_hash"] || dig_group_call_access_hash(video_chat)
+        {
+          "@type" => "inputGroupCall",
+          "id" => group_call_id.to_i,
+          "access_hash" => access_hash.to_i
+        }
+      end
+
+      def try_join_group_call(input_group_call:, local_offer:, audio_source_id:, invite_hash:)
+        candidates = [
+          {
+            "@type": "joinGroupCall",
+            "group_call_id": input_group_call["id"],
+            "participant_id": nil,
+            "audio_source_id": audio_source_id,
+            "payload": local_offer,
+            "is_muted": false,
+            "is_my_video_enabled": false,
+            "invite_hash": invite_hash.to_s
+          },
+          {
+            "@type": "joinGroupCall",
+            "input_group_call": input_group_call,
+            "join_parameters": {
+              "@type": "groupCallJoinParameters",
+              "payload": local_offer,
+              "audio_source_id": audio_source_id,
+              "is_muted": false,
+              "is_my_video_enabled": false,
+              "invite_hash": invite_hash.to_s
+            }
+          }
+        ]
+
+        last_error = nil
+        candidates.each do |query|
+          response = @td.raw(query)
+          return response unless response.is_a?(Hash) && response["@type"] == "error"
+
+          last_error = response["message"].to_s
+        end
+        raise Error, "joinGroupCall failed: #{last_error}"
+      end
+
+      def extract_join_payload(response)
+        return response["text"] if response["text"].is_a?(String)
+        return response["payload"] if response["payload"].is_a?(String)
+
+        group_call_info = response["group_call_info"] || response["groupCallInfo"] || {}
+        return group_call_info["payload"] if group_call_info["payload"].is_a?(String)
+        return group_call_info["params"] if group_call_info["params"].is_a?(String)
+
+        params = response["params"] || response["connection_params"]
+        return params if params.is_a?(String)
+
+        ""
+      end
+
+      def deterministic_audio_source_id(chat_id)
+        seed = "#{chat_id}:#{Process.pid}:#{SecureRandom.hex(4)}"
+        value = seed.each_byte.reduce(0) { |acc, b| ((acc * 131) + b) & 0x7fffffff }
+        value.zero? ? 1 : value
+      end
+
+      def dig_group_call_id(video_chat)
+        group_call = video_chat["group_call"] || {}
+        group_call["id"]
+      end
+
+      def dig_group_call_access_hash(video_chat)
+        group_call = video_chat["group_call"] || {}
+        group_call["access_hash"]
       end
     end
 
