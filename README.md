@@ -8,7 +8,20 @@ A Ruby Telegram Farmwork with:
 ## Install
 
 ```bash
+gem install grubY
+```
+
+For local development:
+
+```bash
 bundle install
+```
+
+From this repo directly:
+
+```bash
+rake build
+gem install ./grubY-0.2.0.gem
 ```
 
 ## What Is New
