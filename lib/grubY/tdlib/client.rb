@@ -202,6 +202,19 @@ module GrubY
         @pending_mutex.synchronize { @pending.delete(tag) } if tag
       end
 
+      def raw(query, timeout: 30.0, poll_interval: 0.05)
+        invoke(query, timeout: timeout, poll_interval: poll_interval)
+      end
+
+      def raw!(query, timeout: 30.0, poll_interval: 0.05)
+        result = raw(query, timeout: timeout, poll_interval: poll_interval)
+        if result.is_a?(Hash) && result["@type"] == "error"
+          message = result["message"] || "unknown TDLib error"
+          raise StandardError, "TDLib raw call failed: #{message}"
+        end
+        result
+      end
+
       def authorized?
         @authorized
       end
