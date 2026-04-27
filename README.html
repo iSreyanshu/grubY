@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GrubY &mdash; Project name not set  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="grubY" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Project name not set
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GrubY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#what-is-new">What Is New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#botapi-quick-start">BotAPI Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#tdlib-quick-start">TDLib Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#tdlib-paths">TDLib Paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#ntgcalls-vc-bridge">NTgCalls VC Bridge</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-python-deps">Install Python deps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-demo">Run Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#full-method-access">Full Method Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#non-interactive-auth-flow-modern">Non-Interactive Auth Flow (Modern)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#steps-to-setup-tdjson">Steps to Setup TDJSON:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#examples">Examples:</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Project name not set</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GrubY</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gruby">
+<h1>GrubY<a class="headerlink" href="#gruby" title="Link to this heading"></a></h1>
+<p>A Ruby Telegram Farmwork with:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GrubY::Client</span></code> (BotAPI runtime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GrubY::TDLib::Client</span></code> (tdjson native runtime, pytdbot-inspired)</p></li>
+</ul>
+</section>
+<section id="install">
+<h1>Install<a class="headerlink" href="#install" title="Link to this heading"></a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gem<span class="w"> </span>install<span class="w"> </span>grubY
+</pre></div>
+</div>
+<p>For local development:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bundle<span class="w"> </span>install
+</pre></div>
+</div>
+<p>From this repo directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rake<span class="w"> </span>build
+gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
+</pre></div>
+</div>
+</section>
+<section id="what-is-new">
+<h1>What Is New<a class="headerlink" href="#what-is-new" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>TDLib internals upgraded with a dedicated <code class="docutils literal notranslate"><span class="pre">TdJson</span></code> wrapper</p></li>
+<li><p>Decorator-style hooks for TDLib:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">initializer</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">finalizer</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_message</span></code></p></li>
+</ul>
+</li>
+<li><p>Queue workers and handler timeout support</p></li>
+<li><p>Better authorization lifecycle handling</p></li>
+<li><p>Multi-client support utility: <code class="docutils literal notranslate"><span class="pre">GrubY::TDLib::ClientManager</span></code></p></li>
+<li><p>CI workflows for TDLib build and gem publish</p></li>
+</ul>
+</section>
+<section id="botapi-quick-start">
+<h1>BotAPI Quick Start<a class="headerlink" href="#botapi-quick-start" title="Link to this heading"></a></h1>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">require_relative</span><span class="w"> </span><span class="s2">&quot;lib/grubY&quot;</span>
+
+<span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;BOT_TOKEN&quot;</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="ss">:message</span><span class="p">,</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Filters</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">ctx</span><span class="o">|</span><span class="w"> </span><span class="n">ctx</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="s2">&quot;Bot is alive&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="n">client</span><span class="o">.</span><span class="n">run</span>
+</pre></div>
+</div>
+</section>
+<section id="tdlib-quick-start">
+<h1>TDLib Quick Start<a class="headerlink" href="#tdlib-quick-start" title="Link to this heading"></a></h1>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">TDLib</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+<span class="w">  </span><span class="ss">api_id</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_API_ID&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_i</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">api_hash</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_API_HASH&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="ss">bot_token</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;TD_BOT_TOKEN&quot;</span><span class="o">]</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">tdjson_path</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;TDJSON_PATH&quot;</span><span class="o">]</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">workers</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">default_handler_timeout</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">initializer</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">update</span><span class="o">|</span>
+<span class="k">end</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">on_message</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">message</span><span class="o">|</span>
+<span class="w">  </span><span class="c1"># Message object from updateNewMessage</span>
+<span class="k">end</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">finalizer</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">update</span><span class="o">|</span>
+<span class="k">end</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;clientReady&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">puts</span><span class="w"> </span><span class="s2">&quot;TDLib ready&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="n">client</span><span class="o">.</span><span class="n">run</span>
+</pre></div>
+</div>
+</section>
+<section id="tdlib-paths">
+<h1>TDLib Paths<a class="headerlink" href="#tdlib-paths" title="Link to this heading"></a></h1>
+<p>Supported shared libraries:</p>
+<ul class="simple">
+<li><p>Linux: <code class="docutils literal notranslate"><span class="pre">libtdjson.so</span></code></p></li>
+<li><p>macOS: <code class="docutils literal notranslate"><span class="pre">libtdjson.dylib</span></code></p></li>
+<li><p>Windows: <code class="docutils literal notranslate"><span class="pre">tdjson.dll</span></code></p></li>
+</ul>
+<p>Provide via:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TDJSON_PATH</span></code> env var</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tdjson_path:</span></code> constructor argument</p></li>
+</ul>
+</section>
+<section id="ntgcalls-vc-bridge">
+<h1>NTgCalls VC Bridge<a class="headerlink" href="#ntgcalls-vc-bridge" title="Link to this heading"></a></h1>
+<p>GrubY includes a bridge for Telegram voice chats via <code class="docutils literal notranslate"><span class="pre">py-tgcalls</span></code> and <code class="docutils literal notranslate"><span class="pre">ntgcalls</span></code>.
+Used <code class="docutils literal notranslate"><span class="pre">Telethon</span></code> based backend!</p>
+<p>example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example/ntgcalls_demo.rb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/requirements.txt</span></code></p></li>
+</ul>
+<section id="install-python-deps">
+<h2>Install Python deps<a class="headerlink" href="#install-python-deps" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>example/requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TD_API_ID</span></code> (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TD_API_HASH</span></code> (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TD_SESSION_STRING</span></code> (Telethon String Session; recommended)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VC_CHAT_ID</span></code> (required for demo)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VC_AUDIO</span></code> (required; local file path or URL)</p></li>
+</ul>
+</section>
+<section id="run-demo">
+<h2>Run Demo<a class="headerlink" href="#run-demo" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ruby<span class="w"> </span>example/ntgcalls_demo.rb
+</pre></div>
+</div>
+</section>
+<section id="full-method-access">
+<h2>Full Method Access<a class="headerlink" href="#full-method-access" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">GrubY::NTgCalls::Bridge#call</span></code> for additional py-tgcalls methods:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;record&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">chat_id</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;recorded.raw&quot;</span><span class="o">]</span><span class="p">)</span>
+<span class="n">bridge</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">chat_id</span><span class="o">]</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ruby usage via alias:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">rbt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">NTgCalls</span><span class="o">::</span><span class="no">RBtgCalls</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">api_id</span><span class="p">:</span><span class="w"> </span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="ss">api_hash</span><span class="p">:</span><span class="w"> </span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="ss">session_string</span><span class="p">:</span><span class="w"> </span><span class="o">...</span><span class="p">)</span>
+<span class="n">rbt</span><span class="o">.</span><span class="n">start</span>
+<span class="n">rbt</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="ss">chat_id</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">100123456789</span><span class="p">,</span><span class="w"> </span><span class="ss">stream</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;song.mp3&quot;</span><span class="p">)</span>
+<span class="n">rbt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="o">-</span><span class="mi">100123456789</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>NTgCalls binding methods:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="o">.</span><span class="n">ntg_call</span><span class="p">(</span><span class="s2">&quot;calls&quot;</span><span class="p">)</span>
+<span class="n">bridge</span><span class="o">.</span><span class="n">ntg_call</span><span class="p">(</span><span class="s2">&quot;cpu_usage&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Method discovery:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="o">.</span><span class="n">pytgcalls_methods</span>
+<span class="n">bridge</span><span class="o">.</span><span class="n">ntgcalls_methods</span>
+</pre></div>
+</div>
+</section>
+<section id="non-interactive-auth-flow-modern">
+<h2>Non-Interactive Auth Flow (Modern)<a class="headerlink" href="#non-interactive-auth-flow-modern" title="Link to this heading"></a></h2>
+<p>Use this when you don’t have <code class="docutils literal notranslate"><span class="pre">TD_SESSION_STRING</span></code> yet:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">NTgCalls</span><span class="o">::</span><span class="no">Bridge</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+<span class="w">  </span><span class="ss">api_id</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_API_ID&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_i</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">api_hash</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_API_HASH&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="ss">auto_login</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">start_calls</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span>
+<span class="p">)</span><span class="o">.</span><span class="n">start</span>
+
+<span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_status</span>
+<span class="k">unless</span><span class="w"> </span><span class="n">status</span><span class="o">[</span><span class="s2">&quot;authorized&quot;</span><span class="o">]</span>
+<span class="w">  </span><span class="n">sent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_send_code</span><span class="p">(</span><span class="ss">phone</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;+91XXXXXXXXXX&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="c1"># Ask user for code from Telegram App/SMS</span>
+<span class="w">  </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_sign_in</span><span class="p">(</span><span class="ss">phone</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;+91XXXXXXXXXX&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">code</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">phone_code_hash</span><span class="p">:</span><span class="w"> </span><span class="n">sent</span><span class="o">[</span><span class="s2">&quot;phone_code_hash&quot;</span><span class="o">]</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_export_session</span>
+<span class="nb">puts</span><span class="w"> </span><span class="n">session</span><span class="o">[</span><span class="s2">&quot;session_string&quot;</span><span class="o">]</span><span class="w"> </span><span class="c1"># Store as TD_SESSION_STRING</span>
+
+<span class="n">bridge</span><span class="o">.</span><span class="n">start_calls</span>
+</pre></div>
+</div>
+<p>Note:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ntgcalls</span></code> media engine alone is not enough to connect Telegram calls.</p></li>
+<li><p>Telegram signaling/auth still needs an MTProto client (here: Telethon through py-tgcalls).</p></li>
+</ul>
+</section>
+</section>
+<section id="steps-to-setup-tdjson">
+<h1>Steps to Setup TDJSON:<a class="headerlink" href="#steps-to-setup-tdjson" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Push a tag (example: <code class="docutils literal notranslate"><span class="pre">v0.2.1</span></code>) or manually run the <code class="docutils literal notranslate"><span class="pre">Release</span> <span class="pre">TDJSON</span></code> workflow.</p></li>
+<li><p>Download the zip for your OS from the GitHub Release assets:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tdjson-linux-x64.zip</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tdjson-macos-x64.zip</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tdjson-windows-x64.zip</span></code></p></li>
+</ul>
+</li>
+<li><p>Extract and copy them into the repo:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Linux:</span> <span class="pre">vendor/tdlib/linux/libtdjson.so</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">macOS:</span> <span class="pre">vendor/tdlib/macos/libtdjson.dylib</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Windows:</span> <span class="pre">vendor/tdlib/windows/tdjson.dll</span></code></p></li>
+</ul>
+</li>
+<li><p>Optional: Set <code class="docutils literal notranslate"><span class="pre">TDJSON_PATH</span></code> if you want to use a custom path.</p></li>
+</ol>
+<p>Note: <code class="docutils literal notranslate"><span class="pre">GrubY::TDLib::Native</span></code> now also auto-detects from <code class="docutils literal notranslate"><span class="pre">vendor/tdlib/...</span></code> paths.</p>
+</section>
+<section id="examples">
+<h1>Examples:<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example/bot.rb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/tdlib.rb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/userbot.rb</span></code> (phone/QR login)</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="grubY" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
