@@ -1,6 +1,0 @@
-site_name: grubY
-theme:
-  name: readthedocs
-
-nav:
-  - Home: README.md
