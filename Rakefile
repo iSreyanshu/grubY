@@ -53,4 +53,20 @@ namespace :ci do
   end
 end
 
+namespace :tdlib do
+  desc "Generate tdlib.json in project root (override via SRC, VERSION, COMMIT, OUT env vars)"
+  task :generate_json do
+    src = ENV.fetch("SRC", "https://raw.githubusercontent.com/tdlib/td/refs/heads/master/td/generate/scheme/td_api.tl")
+    version = ENV.fetch("VERSION", "")
+    commit = ENV.fetch("COMMIT", "")
+    out = ENV.fetch("OUT", File.join(APP_ROOT, "tdlib.json"))
+
+    ruby "scripts/generate-tdlib-json.rb",
+         "--src", src,
+         "--version", version,
+         "--commit", commit,
+         "--out", out
+  end
+end
+
 task default: :build
