@@ -2,7 +2,5 @@ site_name: grubY
 theme:
   name: readthedocs
 
-docs_dir: '.'
-
 nav:
   - Home: README.md
