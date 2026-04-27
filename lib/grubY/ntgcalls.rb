@@ -1,219 +1,185 @@
-require "json"
-require "open3"
-require "thread"
 require "timeout"
+require "thread"
+require_relative "ntgcalls/native"
 
 module GrubY
   module NTgCalls
-    class BridgeError < StandardError; end
+    class Error < StandardError; end
 
-    class Bridge
-      DEFAULT_TIMEOUT = 30
+    module StreamMode
+      CAPTURE = 0
+      PLAYBACK = 1
+    end
 
-      attr_reader :python_bin, :script_path
+    module MediaSource
+      FILE = 1 << 0
+      SHELL = 1 << 1
+      FFMPEG = 1 << 2
+      DEVICE = 1 << 3
+      DESKTOP = 1 << 4
+      EXTERNAL = 1 << 5
+    end
 
-      def initialize(
-        api_id:,
-        api_hash:,
-        session_name: "gruby_ntgcalls",
-        session_string: nil,
-        bot_token: nil,
-        workdir: "storage/ntgcalls",
-        auto_login: true,
-        start_calls: true,
-        python_bin: ENV.fetch("GRUBY_NTGCALLS_PYTHON", "python"),
-        script_path: File.expand_path("ntgcalls/bridge.py", __dir__)
-      )
-        @bootstrap = {
-          api_id: api_id,
-          api_hash: api_hash,
-          session_name: session_name,
-          session_string: session_string,
-          bot_token: bot_token,
-          workdir: workdir,
-          auto_login: auto_login,
-          start_calls: start_calls
-        }
-        @python_bin = python_bin
-        @script_path = script_path
-        @lock = Mutex.new
+    class Client
+      DEFAULT_TIMEOUT = 20
+      attr_reader :handle
+
+      def initialize(lib_path: nil)
+        Native.load!(lib_path)
+        @handle = Native.ntg_init
+        raise Error, "ntgcalls init failed" if @handle.nil? || @handle.zero?
       end
 
-      def start
-        return self if running?
+      def self.version(lib_path: nil)
+        Native.load!(lib_path)
+        version_ptr = FFI::MemoryPointer.new(:pointer)
+        code = Native.ntg_get_version(version_ptr)
+        raise Error, "ntg_get_version failed with code=#{code}" if code.negative?
 
-        raise BridgeError, "Bridge script not found at #{script_path}" unless File.exist?(script_path)
-
-        @stdin, @stdout, @stderr, @wait_thr = Open3.popen3(python_bin, script_path)
-        boot = request("init", @bootstrap, timeout: 60)
-        raise BridgeError, boot["error"].to_s unless boot["ok"]
-
-        self
+        read_c_string_ptr(version_ptr)
       end
 
-      def stop
-        return self unless running?
+      def close
+        return if @handle.nil? || @handle.zero?
 
-        begin
-          request("shutdown", {}, timeout: 15)
-        rescue StandardError
-        end
+        code = Native.ntg_destroy(@handle)
+        raise Error, "ntg_destroy failed with code=#{code}" if code.negative?
 
-        [@stdin, @stdout, @stderr].each do |io|
-          begin
-            io&.close unless io&.closed?
-          rescue IOError
-          end
-        end
-        @wait_thr&.kill
-        @stdin = nil
-        @stdout = nil
-        @stderr = nil
-        @wait_thr = nil
-        self
+        @handle = nil
       end
 
-      def running?
-        @wait_thr && @wait_thr.alive?
+      alias stop close
+
+      def create(chat_id:, timeout: DEFAULT_TIMEOUT)
+        call_async_string(:ntg_create, [handle!, chat_id.to_i], timeout: timeout)
       end
 
-      def play(chat_id:, stream:, auto_start: true, invite_hash: nil, join_as: nil)
-        payload = {
-          chat_id: chat_id,
-          stream: stream,
-          auto_start: auto_start,
-          invite_hash: invite_hash,
-          join_as: join_as
-        }
-        request!("play", payload, timeout: 60)
-      end
-
-      def pause(chat_id:)
-        request!("pause", { chat_id: chat_id })
-      end
-
-      def resume(chat_id:)
-        request!("resume", { chat_id: chat_id })
-      end
-
-      def mute(chat_id:)
-        request!("mute", { chat_id: chat_id })
-      end
-
-      def unmute(chat_id:)
-        request!("unmute", { chat_id: chat_id })
-      end
-
-      def leave_call(chat_id:, close: false)
-        request!("leave_call", { chat_id: chat_id, close: close })
-      end
-
-      def change_volume_call(chat_id:, volume:)
-        request!("change_volume_call", { chat_id: chat_id, volume: volume })
-      end
-
-      def get_participants(chat_id:)
-        request!("get_participants", { chat_id: chat_id })
-      end
-
-      def start_calls
-        request!("start_calls", {})
-      end
-
-      def auth_status
-        request!("auth_status", {})
-      end
-
-      def auth_send_code(phone:, force_sms: false)
-        request!("auth_send_code", { phone: phone, force_sms: force_sms })
-      end
-
-      def auth_sign_in(phone: nil, code: nil, password: nil, bot_token: nil, phone_code_hash: nil)
-        request!(
-          "auth_sign_in",
-          {
-            phone: phone,
-            code: code,
-            password: password,
-            bot_token: bot_token,
-            phone_code_hash: phone_code_hash
-          }
+      def connect(chat_id:, params:, is_presentation: false, timeout: DEFAULT_TIMEOUT)
+        call_async(
+          :ntg_connect,
+          [handle!, chat_id.to_i, params.to_s, !!is_presentation],
+          timeout: timeout
         )
       end
 
-      def auth_export_session
-        request!("auth_export_session", {})
+      def play(chat_id:, stream:, sample_rate: 48_000, channels: 2, keep_open: false, timeout: DEFAULT_TIMEOUT)
+        audio = Native::NtgAudioDescriptionStruct.new
+        audio[:mediaSource] = MediaSource::FILE
+        audio[:input] = stream.to_s
+        audio[:sampleRate] = sample_rate.to_i
+        audio[:channelCount] = channels.to_i
+        audio[:keepOpen] = !!keep_open
+
+        media = Native::NtgMediaDescriptionStruct.new
+        media[:microphone] = audio.to_ptr
+        media[:speaker] = FFI::Pointer::NULL
+        media[:camera] = FFI::Pointer::NULL
+        media[:screen] = FFI::Pointer::NULL
+
+        call_async(
+          :ntg_set_stream_sources,
+          [handle!, chat_id.to_i, StreamMode::CAPTURE, media],
+          timeout: timeout
+        )
       end
 
-      def tl_pretty(obj:, indent: nil)
-        request!("tl_pretty", { obj: obj, indent: indent })
+      def pause(chat_id:, timeout: DEFAULT_TIMEOUT)
+        call_async(:ntg_pause, [handle!, chat_id.to_i], timeout: timeout)
       end
 
-      def tl_serialize_bytes(data:)
-        request!("tl_serialize_bytes", { data: data })
+      def resume(chat_id:, timeout: DEFAULT_TIMEOUT)
+        call_async(:ntg_resume, [handle!, chat_id.to_i], timeout: timeout)
       end
 
-      def tl_serialize_datetime(value:)
-        request!("tl_serialize_datetime", { value: value })
+      def mute(chat_id:, timeout: DEFAULT_TIMEOUT)
+        call_async(:ntg_mute, [handle!, chat_id.to_i], timeout: timeout)
       end
 
-      def call(method_name, args: [], kwargs: {})
-        request!("call_method", { method: method_name, args: args, kwargs: kwargs })
+      def unmute(chat_id:, timeout: DEFAULT_TIMEOUT)
+        call_async(:ntg_unmute, [handle!, chat_id.to_i], timeout: timeout)
       end
 
-      def ntg_call(method_name, args: [], kwargs: {})
-        request!("call_ntg", { method: method_name, args: args, kwargs: kwargs })
+      def stop_call(chat_id:, timeout: DEFAULT_TIMEOUT)
+        call_async(:ntg_stop, [handle!, chat_id.to_i], timeout: timeout)
       end
 
-      def pytgcalls_methods
-        request!("list_pytgcalls_methods", {})
+      def cpu_usage(timeout: DEFAULT_TIMEOUT)
+        out = FFI::MemoryPointer.new(:double)
+        call_async(:ntg_cpu_usage, [handle!, out], timeout: timeout)
+        out.read_double
       end
 
-      def ntgcalls_methods
-        request!("list_ntgcalls_methods", {})
-      end
-
-      def method_missing(name, *args, **kwargs, &block)
-        return super if block
-
-        call(name.to_s, args: args, kwargs: kwargs)
-      rescue BridgeError
-        super
-      end
-
-      def respond_to_missing?(_name, _include_private = false)
-        true
+      def time(chat_id:, mode: StreamMode::CAPTURE, timeout: DEFAULT_TIMEOUT)
+        out = FFI::MemoryPointer.new(:int64)
+        call_async(:ntg_time, [handle!, chat_id.to_i, mode.to_i, out], timeout: timeout)
+        out.read_int64
       end
 
       private
 
-      def request!(action, payload = {}, timeout: DEFAULT_TIMEOUT)
-        response = request(action, payload, timeout: timeout)
-        return response if response["ok"]
+      def handle!
+        raise Error, "ntgcalls client is closed" if @handle.nil? || @handle.zero?
 
-        raise BridgeError, "#{response['error']} (#{response['error_type']})"
+        @handle
       end
 
-      def request(action, payload = {}, timeout: DEFAULT_TIMEOUT)
-        raise BridgeError, "Bridge is not running" unless running?
+      def call_async_string(function_name, args, timeout:)
+        out_ptr = FFI::MemoryPointer.new(:pointer)
+        call_async(function_name, args + [out_ptr], timeout: timeout)
+        self.class.read_c_string_ptr(out_ptr)
+      end
 
-        raw = nil
-        @lock.synchronize do
-          @stdin.write({ action: action, payload: payload }.to_json + "\n")
-          @stdin.flush
+      def call_async(function_name, args, timeout:)
+        done = Queue.new
+        error_code = FFI::MemoryPointer.new(:int)
+        error_code.write_int(0)
+        error_message = FFI::MemoryPointer.new(:pointer)
+        error_message.write_pointer(FFI::Pointer::NULL)
 
-          begin
-            Timeout.timeout(timeout) { raw = @stdout.gets }
-          rescue Timeout::Error
-            raise BridgeError, "Bridge request timeout on action=#{action}"
-          end
+        callback = proc do |_user_data|
+          done << true
         end
 
-        raise BridgeError, "Bridge closed unexpectedly" if raw.nil?
+        future = Native::NtgAsyncStruct.new
+        future[:userData] = FFI::Pointer::NULL
+        future[:errorCode] = error_code
+        future[:errorMessage] = error_message
+        future[:promise] = callback
 
-        JSON.parse(raw)
-      rescue JSON::ParserError => e
-        raise BridgeError, "Invalid bridge response: #{e.message}"
+        code = Native.public_send(function_name, *args, future)
+        raise_native_error(code, error_message) if code.negative?
+
+        begin
+          Timeout.timeout(timeout) { done.pop }
+        rescue Timeout::Error
+          raise Error, "ntgcalls timeout while waiting for #{function_name}"
+        end
+
+        async_code = error_code.read_int
+        raise_native_error(async_code, error_message) if async_code.negative?
+        true
+      end
+
+      def raise_native_error(code, error_message_ptr)
+        message_ptr = error_message_ptr.read_pointer
+        native_message = message_ptr.null? ? nil : message_ptr.read_string
+        suffix = native_message.to_s.empty? ? "" : " (#{native_message})"
+        raise Error, "ntgcalls error code=#{code}#{suffix}"
+      end
+
+      class << self
+        def read_c_string_ptr(pointer_to_pointer)
+          ptr = pointer_to_pointer.read_pointer
+          return "" if ptr.null?
+
+          ptr.read_string
+        end
+      end
+    end
+
+    class Bridge
+      def initialize(*_args, **_kwargs)
+        raise Error, "Use GrubY::NTgCalls::Client (pure Ruby based ntgcalls C bindings)."
       end
     end
 
