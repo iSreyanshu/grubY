@@ -68,7 +68,7 @@ end
 client.finalizer do |update|
 end
 
-client.on("clientReady") { puts "TDLib ready" }
+client.on("clientReady") { puts "TDLib Ready" }
 client.run
 ```
 
@@ -85,9 +85,9 @@ Provide via:
 - `TDJSON_PATH` env var
 - `tdjson_path:` constructor argument
 
-## NTgCalls Native (Raw Ruby)
+## NTgCalls Native
 
-GrubY now uses direct Ruby + C bindings for `ntgcalls` (no Python bridge).
+GrubY uses direct Ruby and C bindings for `ntgcalls`.
 
 example:
 
