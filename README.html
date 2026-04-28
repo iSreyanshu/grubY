@@ -210,7 +210,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 <span class="p">)</span>
 
 <span class="n">bot</span><span class="o">.</span><span class="n">start</span>
-<span class="n">bot</span><span class="o">.</span><span class="n">join_and_play</span><span class="p">(</span><span class="ss">chat</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@mychat&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">audio</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;song.mp3&quot;</span><span class="p">)</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">join_and_play</span><span class="p">(</span><span class="ss">chat</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@GrubYChat&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">audio</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;song.mp3&quot;</span><span class="p">)</span>
 <span class="n">bot</span><span class="o">.</span><span class="n">pause</span>
 <span class="n">bot</span><span class="o">.</span><span class="n">resume</span>
 <span class="n">bot</span><span class="o">.</span><span class="n">mute</span>
@@ -251,7 +251,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 <span class="no">GrubY</span><span class="o">::</span><span class="no">Enums</span><span class="o">::</span><span class="no">GroupCallUpdateType</span><span class="o">::</span><span class="no">UPDATE_GROUP_CALL</span>
 </pre></div>
 </div>
-<p>Inline keyboard + WebApp:</p>
+<p>InlineKeyboard and WebApp:</p>
 <div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">markup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Keyboard</span><span class="o">.</span><span class="n">inline</span><span class="p">(</span><span class="o">[</span>
 <span class="w">  </span><span class="o">[</span><span class="no">GrubY</span><span class="o">::</span><span class="no">Keyboard</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Ping&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ping:1&quot;</span><span class="p">)</span><span class="o">]</span><span class="p">,</span>
 <span class="w">  </span><span class="o">[</span><span class="no">GrubY</span><span class="o">::</span><span class="no">Keyboard</span><span class="o">.</span><span class="n">web_app_button</span><span class="p">(</span><span class="s2">&quot;Open App&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;https://example.com/app&quot;</span><span class="p">)</span><span class="o">]</span>
@@ -259,7 +259,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Menu&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">reply_markup</span><span class="p">:</span><span class="w"> </span><span class="n">markup</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Bound + Raw:</p>
+<p>Bound and Raw:</p>
 <div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bound</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Bound</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
 <span class="n">bound</span><span class="o">[</span><span class="ss">:send</span><span class="o">].</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
 <span class="n">bound</span><span class="o">[</span><span class="ss">:raw</span><span class="o">].</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;getMe&quot;</span><span class="p">)</span>
@@ -312,7 +312,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 </section>
 <section id="decorators">
 <h1>Decorators<a class="headerlink" href="#decorators" title="Link to this heading"></a></h1>
-<p>Pyrogram-style decorators are supported on <code class="docutils literal notranslate"><span class="pre">GrubY::Client</span></code>:</p>
+<p>Decorators are supported on <code class="docutils literal notranslate"><span class="pre">GrubY::Client</span></code>:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">on_message</span></code>, <code class="docutils literal notranslate"><span class="pre">on_edited_message</span></code>, <code class="docutils literal notranslate"><span class="pre">on_business_message</span></code>, <code class="docutils literal notranslate"><span class="pre">on_edited_business_message</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">on_deleted_messages</span></code>, <code class="docutils literal notranslate"><span class="pre">on_deleted_business_messages</span></code></p></li>
