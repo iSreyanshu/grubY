@@ -1,4 +1,5 @@
 require_relative "../lib/grubY"
+require "json"
 
 # Usage:
 # TD_USER_SESSION='<base64>' \
@@ -16,7 +17,7 @@ chat = ENV["VC_CHAT"].to_s
 audio = ENV["VC_AUDIO"].to_s
 
 abort("Missing TD_USER_SESSION") if td_user_session.empty?
-abort("Missing VC_CHAT (chat id or @username)") if chat.empty?
+abort("Missing VC_CHAT (chat ID or @username)") if chat.empty?
 abort("Missing VC_AUDIO") if audio.empty?
 
 bot = GrubY::NTgCalls::MusicBot.new(
@@ -33,9 +34,10 @@ begin
     audio: audio,
     invite_hash: ENV.fetch("VC_INVITE_HASH", "")
   )
-  puts "[NTgCalls] Joined chat #{result[:chat_id]} and started playback."
+  puts "[NTgCalls] Joined chat #{result[:chat_id]} and started playback"
+  puts "[NTgCalls] offer payload size=#{result[:offer].to_s.bytesize}"
 
-  puts "Commands: pause, resume, mute, unmute, time, cpu, stop, quit"
+  puts "Commands: pause, resume, mute, unmute, time, cpu, stop, showraw, quit"
   loop do
     print "> "
     cmd = STDIN.gets.to_s.strip.downcase
@@ -60,10 +62,17 @@ begin
     when "stop"
       bot.stop_call
       puts "stopped"
+    when "showraw"
+      igc = bot.input_group_call(chat: chat)
+      puts "InputGroupCall: #{igc.to_json}"
+      puts "InputPeerSelf: #{bot.input_peer_self.to_json}"
+      puts "DataJSON: #{bot.data_json(result[:offer]).to_json}"
+      puts "JoinGroupCall: #{GrubY::RawTypes.join_group_call(call: igc, params: bot.data_json(result[:offer])).to_json}"
+      puts "LeaveGroupCall: #{GrubY::RawTypes.leave_group_call(call: igc, source: 0).to_json}"
     when "quit", "exit"
       break
     else
-      puts "unknown command!"
+      puts "Unknown command!"
     end
   end
 ensure
