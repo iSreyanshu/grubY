@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name        = "grubY"
   s.version     = "0.2.0"
-  s.summary     = "A Ruby Farmwork for Telegram BotAPI and TDLib"
-  s.description = "Telegram BotAPI and TDLib toolkit for Ruby, with optional NTgCalls Python bridge."
+  s.summary     = "A Ruby wrapper for Telegram BotAPI and TDLib"
+  s.description = "Telegram BotAPI and TDLib toolkit for Ruby, with direct NTgCalls native bindings."
   s.authors     = ["Sreyanshu"]
   s.homepage    = "https://github.com/iSreyanshu/grubY"
   s.license     = "MIT"
