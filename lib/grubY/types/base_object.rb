@@ -12,12 +12,16 @@ module GrubY
       end
     end
 
-    def initialize(data = {})
+    def initialize(data = {}, api: nil, client: nil)
       @data = normalize_hash(data)
+      @api = api
+      @client = client
       self.class.field_names.each do |field|
         instance_variable_set("@#{field}", @data[field.to_s])
       end
     end
+
+    attr_reader :api, :client
 
     def [](key)
       @data[key.to_s]
@@ -44,6 +48,18 @@ module GrubY
     end
 
     private
+
+    def call_api(method, params = {})
+      raise ArgumentError, "API is not bound to this object" unless @api
+
+      @api.request(method, params)
+    end
+
+    def call_raw_api(method, params = {})
+      raise ArgumentError, "API is not bound to this object" unless @api
+
+      @api.raw(method, params)
+    end
 
     def normalize_hash(data)
       return {} unless data.is_a?(Hash)
