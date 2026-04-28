@@ -5,10 +5,11 @@ module GrubY
       @next_handler_id = 1
     end
 
-    def on(event, filter=nil, &block)
+    def on(event, filter = nil, group: 0, &block)
       id = @next_handler_id
       @next_handler_id += 1
-      (@handlers[event] ||= []) << { id: id, filter: filter, block: block }
+      (@handlers[event] ||= []) << { id: id, filter: filter, block: block, group: group.to_i }
+      @handlers[event].sort_by! { |h| h[:group] }
       id
     end
 
@@ -34,7 +35,20 @@ module GrubY
       @handlers[event].each do |entry|
         filter = entry[:filter]
         handler = entry[:block]
-        next if filter && !filter.call(ctx)
+        if filter
+          pass = begin
+            if defined?(GrubY::Filters::Filter) && filter.is_a?(GrubY::Filters::Filter)
+              filter.call(nil, nil, ctx)
+            elsif filter.respond_to?(:call)
+              filter.call(ctx)
+            else
+              true
+            end
+          rescue ArgumentError
+            filter.call(nil, nil, ctx)
+          end
+          next unless pass
+        end
         begin
           handler.call(ctx)
         rescue => e
