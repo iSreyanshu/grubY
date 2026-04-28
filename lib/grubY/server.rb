@@ -1,4 +1,4 @@
-﻿require "sinatra/base"
+require "sinatra/base"
 require "json"
 require_relative "../../config/config"
 
@@ -16,4 +16,3 @@ module GrubY
     end
   end
 end
-
