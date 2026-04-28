@@ -117,7 +117,7 @@ bot = GrubY::NTgCalls::MusicBot.new(
 )
 
 bot.start
-bot.join_and_play(chat: "@mychat", audio: "song.mp3")
+bot.join_and_play(chat: "@GrubYChat", audio: "song.mp3")
 bot.pause
 bot.resume
 bot.mute
@@ -162,7 +162,7 @@ GrubY::Enums::ChatAction::TYPING
 GrubY::Enums::GroupCallUpdateType::UPDATE_GROUP_CALL
 ```
 
-Inline keyboard + WebApp:
+InlineKeyboard and WebApp:
 
 ```ruby
 markup = GrubY::Keyboard.inline([
@@ -172,7 +172,7 @@ markup = GrubY::Keyboard.inline([
 client.send_message(chat_id, "Menu", reply_markup: markup)
 ```
 
-Bound + Raw:
+Bound and Raw:
 
 ```ruby
 bound = GrubY::Bound.bind(ctx)
@@ -233,7 +233,7 @@ GrubY::Enums::ChatMemberStatus::ADMINISTRATOR
 
 ## Decorators
 
-Pyrogram-style decorators are supported on `GrubY::Client`:
+Decorators are supported on `GrubY::Client`:
 
 - `on_message`, `on_edited_message`, `on_business_message`, `on_edited_business_message`
 - `on_deleted_messages`, `on_deleted_business_messages`
