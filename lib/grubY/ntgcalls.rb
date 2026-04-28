@@ -2,8 +2,10 @@ require "timeout"
 require "thread"
 require "securerandom"
 require_relative "ntgcalls/native"
+require_relative "raw"
 require_relative "tdlib/client"
 require_relative "tdlib/user_session"
+require_relative "raw_types"
 
 module GrubY
   module NTgCalls
@@ -241,6 +243,43 @@ module GrubY
         }
       end
 
+      def input_group_call(chat:)
+        chat_id = resolve_chat_id(chat)
+        fetch_input_group_call(chat_id)
+      end
+
+      def input_peer_self
+        GrubY::RawTypes.input_peer_self
+      end
+
+      def data_json(value)
+        GrubY::RawTypes.to_data_json(value)
+      end
+
+      def join_group_call(chat:, payload:, audio_source_id:, muted: false, video_stopped: true, invite_hash: nil)
+        call = input_group_call(chat: chat)
+        params = data_json(payload)
+        query = GrubY::RawTypes.join_group_call(
+          call: call,
+          params: params,
+          muted: muted,
+          video_stopped: video_stopped,
+          invite_hash: invite_hash,
+          join_as: input_peer_self
+        )
+        GrubY::Raw.td_call!(@td, mtproto_to_td_join_query(query, audio_source_id: audio_source_id))
+      end
+
+      def leave_group_call(chat:, source:)
+        call = input_group_call(chat: chat)
+        query = GrubY::RawTypes.leave_group_call(call: call, source: source)
+        GrubY::Raw.td_call!(@td, mtproto_to_td_leave_query(query))
+      end
+
+      def update_group_call(payload)
+        GrubY::RawTypes.update_group_call(payload)
+      end
+
       def pause
         @ntg.pause(chat_id: joined_chat_id!)
       end
@@ -375,6 +414,28 @@ module GrubY
         raise Error, "joinGroupCall failed: #{last_error}"
       end
 
+      def mtproto_to_td_join_query(mtproto_query, audio_source_id:)
+        {
+          "@type": "joinGroupCall",
+          input_group_call: mtproto_query["call"],
+          join_parameters: {
+            "@type": "groupCallJoinParameters",
+            payload: mtproto_query.dig("params", "data"),
+            audio_source_id: audio_source_id.to_i,
+            is_muted: !!mtproto_query["muted"],
+            is_my_video_enabled: !mtproto_query["video_stopped"],
+            invite_hash: mtproto_query["invite_hash"].to_s
+          }
+        }
+      end
+
+      def mtproto_to_td_leave_query(mtproto_query)
+        {
+          "@type": "leaveGroupCall",
+          input_group_call: mtproto_query["call"]
+        }
+      end
+
       def extract_join_payload(response)
         return response["text"] if response["text"].is_a?(String)
         return response["payload"] if response["payload"].is_a?(String)
@@ -408,7 +469,7 @@ module GrubY
 
     class Bridge
       def initialize(*_args, **_kwargs)
-        raise Error, "Use GrubY::NTgCalls::Client (pure Ruby based ntgcalls C bindings)."
+        raise Error, "Use GrubY::NTgCalls::Client (pure Ruby and ntgcalls C bindings)."
       end
     end
 
