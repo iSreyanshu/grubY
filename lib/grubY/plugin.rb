@@ -1,4 +1,4 @@
-﻿module GrubY
+module GrubY
   class Plugin
     def self.load(bot, path)
       mod = Module.new
@@ -12,4 +12,3 @@
     end
   end
 end
-
