@@ -101,6 +101,8 @@ module GrubY
         self
       end
 
+      alias connect start
+
       def stop
         return self unless @running
 
@@ -114,6 +116,10 @@ module GrubY
         @native_client = nil
         self
       end
+
+      alias disconnect stop
+      alias terminate stop
+      alias initialize_client start
 
       def restart
         stop
@@ -223,12 +229,57 @@ module GrubY
         send_query("@type": "checkAuthenticationCode", code: code)
       end
 
+      alias sign_in check_authentication_code
+
       def check_authentication_password(password)
         send_query("@type": "checkAuthenticationPassword", password: password)
       end
 
+      alias check_password check_authentication_password
+
       def check_authentication_bot_token(token = @bot_token)
         send_query("@type": "checkAuthenticationBotToken", token: token)
+      end
+
+      alias sign_in_bot check_authentication_bot_token
+
+      def send_phone_number_code(phone_number, settings: nil)
+        payload = { "@type": "setAuthenticationPhoneNumber", phone_number: phone_number }
+        payload[:settings] = settings if settings
+        send_query(payload)
+      end
+
+      def resend_phone_number_code
+        send_query("@type": "resendAuthenticationCode")
+      end
+
+      def send_recovery_code
+        send_query("@type": "requestAuthenticationPasswordRecovery")
+      end
+
+      def recover_password(recovery_code, new_password: nil, new_hint: nil)
+        send_query(
+          "@type": "recoverAuthenticationPassword",
+          recovery_code: recovery_code,
+          new_password: new_password,
+          new_hint: new_hint
+        )
+      end
+
+      def log_out
+        send_query("@type": "logOut")
+      end
+
+      def get_active_sessions
+        invoke("@type": "getActiveSessions")
+      end
+
+      def reset_session(session_hash)
+        send_query("@type": "terminateSession", session_id: session_hash)
+      end
+
+      def reset_sessions
+        send_query("@type": "terminateAllOtherSessions")
       end
 
       def set_log_verbosity(level)
