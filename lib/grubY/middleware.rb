@@ -1,4 +1,4 @@
-﻿module GrubY
+module GrubY
   class Middleware
     def initialize
       @stack = []
@@ -16,4 +16,3 @@
     end
   end
 end
-
