@@ -1,4 +1,4 @@
-﻿require "json"
+require "json"
 
 module GrubY
   class Session
@@ -28,4 +28,3 @@ module GrubY
     end
   end
 end
-
