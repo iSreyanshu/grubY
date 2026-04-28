@@ -1,4 +1,4 @@
-﻿require "net/http"
+require "net/http"
 
 module GrubY
   class Media
@@ -36,4 +36,3 @@ module GrubY
     end
   end
 end
-
