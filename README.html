@@ -49,14 +49,18 @@
 <li class="toctree-l1"><a class="reference internal" href="#botapi-quick-start">BotAPI Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#tdlib-quick-start">TDLib Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#tdlib-paths">TDLib Paths</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#ntgcalls-vc-bridge">NTgCalls VC Bridge</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#install-python-deps">Install Python deps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#ntgcalls-native-raw-ruby">NTgCalls Native (Raw Ruby)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#run-demo">Run Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#full-method-access">Full Method Access</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#non-interactive-auth-flow-modern">Non-Interactive Auth Flow (Modern)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#direct-ruby-usage">Direct Ruby Usage</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#telegram-user-session-string-ruby">Telegram User Session String (Ruby)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#framework-helpers">Framework Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#enumerations">Enumerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#decorators">Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#handlers">Handlers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#update-filters">Update Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#steps-to-setup-tdjson">Steps to Setup TDJSON:</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#examples">Examples:</a></li>
 </ul>
@@ -86,7 +90,7 @@
              
   <section id="gruby">
 <h1>GrubY<a class="headerlink" href="#gruby" title="Link to this heading"></a></h1>
-<p>A Ruby Telegram wrapper with TDLib:</p>
+<p>A Ruby Telegram wrapper with:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">GrubY::Client</span></code> (BotAPI runtime)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">GrubY::TDLib::Client</span></code> (tdjson native runtime, pytdbot-inspired)</p></li>
@@ -174,91 +178,206 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 <li><p><code class="docutils literal notranslate"><span class="pre">tdjson_path:</span></code> constructor argument</p></li>
 </ul>
 </section>
-<section id="ntgcalls-vc-bridge">
-<h1>NTgCalls VC Bridge<a class="headerlink" href="#ntgcalls-vc-bridge" title="Link to this heading"></a></h1>
-<p>GrubY includes a bridge for Telegram voice chats via <code class="docutils literal notranslate"><span class="pre">py-tgcalls</span></code> and <code class="docutils literal notranslate"><span class="pre">ntgcalls</span></code>.
-Used <code class="docutils literal notranslate"><span class="pre">Telethon</span></code> based backend!</p>
+<section id="ntgcalls-native-raw-ruby">
+<h1>NTgCalls Native (Raw Ruby)<a class="headerlink" href="#ntgcalls-native-raw-ruby" title="Link to this heading"></a></h1>
+<p>GrubY now uses direct Ruby + C bindings for <code class="docutils literal notranslate"><span class="pre">ntgcalls</span></code> (no Python bridge).</p>
 <p>example:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example/ntgcalls_demo.rb</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example/requirements.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/ntgcalls.rb</span></code></p></li>
 </ul>
-<section id="install-python-deps">
-<h2>Install Python deps<a class="headerlink" href="#install-python-deps" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>example/requirements.txt
-</pre></div>
-</div>
-</section>
 <section id="environment">
 <h2>Environment<a class="headerlink" href="#environment" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">TD_API_ID</span></code> (required)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">TD_API_HASH</span></code> (required)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">TD_SESSION_STRING</span></code> (Telethon String Session; recommended)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">VC_CHAT_ID</span></code> (required for demo)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TD_USER_SESSION</span></code> (required; generated via <code class="docutils literal notranslate"><span class="pre">example/generate_user_session.rb</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NTGCALLS_PATH</span></code> (optional; absolute/custom path to shared library)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VC_CHAT</span></code> (required; numeric chat id or <code class="docutils literal notranslate"><span class="pre">&#64;username</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">VC_AUDIO</span></code> (required; local file path or URL)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VC_INVITE_HASH</span></code> (optional; invite hash for restricted voice chats)</p></li>
 </ul>
 </section>
 <section id="run-demo">
 <h2>Run Demo<a class="headerlink" href="#run-demo" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ruby<span class="w"> </span>example/ntgcalls_demo.rb
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ruby<span class="w"> </span>example/ntgcalls.rb
 </pre></div>
 </div>
 </section>
-<section id="full-method-access">
-<h2>Full Method Access<a class="headerlink" href="#full-method-access" title="Link to this heading"></a></h2>
-<p>Use <code class="docutils literal notranslate"><span class="pre">GrubY::NTgCalls::Bridge#call</span></code> for additional py-tgcalls methods:</p>
-<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;record&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">chat_id</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;recorded.raw&quot;</span><span class="o">]</span><span class="p">)</span>
-<span class="n">bridge</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">args</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">chat_id</span><span class="o">]</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Ruby usage via alias:</p>
-<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">rbt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">NTgCalls</span><span class="o">::</span><span class="no">RBtgCalls</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">api_id</span><span class="p">:</span><span class="w"> </span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="ss">api_hash</span><span class="p">:</span><span class="w"> </span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="ss">session_string</span><span class="p">:</span><span class="w"> </span><span class="o">...</span><span class="p">)</span>
-<span class="n">rbt</span><span class="o">.</span><span class="n">start</span>
-<span class="n">rbt</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="ss">chat_id</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">100123456789</span><span class="p">,</span><span class="w"> </span><span class="ss">stream</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;song.mp3&quot;</span><span class="p">)</span>
-<span class="n">rbt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="o">-</span><span class="mi">100123456789</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>NTgCalls binding methods:</p>
-<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="o">.</span><span class="n">ntg_call</span><span class="p">(</span><span class="s2">&quot;calls&quot;</span><span class="p">)</span>
-<span class="n">bridge</span><span class="o">.</span><span class="n">ntg_call</span><span class="p">(</span><span class="s2">&quot;cpu_usage&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Method discovery:</p>
-<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="o">.</span><span class="n">pytgcalls_methods</span>
-<span class="n">bridge</span><span class="o">.</span><span class="n">ntgcalls_methods</span>
-</pre></div>
-</div>
-</section>
-<section id="non-interactive-auth-flow-modern">
-<h2>Non-Interactive Auth Flow (Modern)<a class="headerlink" href="#non-interactive-auth-flow-modern" title="Link to this heading"></a></h2>
-<p>Use this when you don’t have <code class="docutils literal notranslate"><span class="pre">TD_SESSION_STRING</span></code> yet:</p>
-<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">NTgCalls</span><span class="o">::</span><span class="no">Bridge</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
-<span class="w">  </span><span class="ss">api_id</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_API_ID&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_i</span><span class="p">,</span>
-<span class="w">  </span><span class="ss">api_hash</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_API_HASH&quot;</span><span class="p">),</span>
-<span class="w">  </span><span class="ss">auto_login</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">,</span>
-<span class="w">  </span><span class="ss">start_calls</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span>
-<span class="p">)</span><span class="o">.</span><span class="n">start</span>
+<section id="direct-ruby-usage">
+<h2>Direct Ruby Usage<a class="headerlink" href="#direct-ruby-usage" title="Link to this heading"></a></h2>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">NTgCalls</span><span class="o">::</span><span class="no">MusicBot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+<span class="w">  </span><span class="ss">td_user_session</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_USER_SESSION&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="ss">tdjson_path</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;TDJSON_PATH&quot;</span><span class="o">]</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">ntgcalls_path</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;NTGCALLS_PATH&quot;</span><span class="o">]</span>
+<span class="p">)</span>
 
-<span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_status</span>
-<span class="k">unless</span><span class="w"> </span><span class="n">status</span><span class="o">[</span><span class="s2">&quot;authorized&quot;</span><span class="o">]</span>
-<span class="w">  </span><span class="n">sent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_send_code</span><span class="p">(</span><span class="ss">phone</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;+91XXXXXXXXXX&quot;</span><span class="p">)</span>
-<span class="w">  </span><span class="c1"># Ask user for code from Telegram App/SMS</span>
-<span class="w">  </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_sign_in</span><span class="p">(</span><span class="ss">phone</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;+91XXXXXXXXXX&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">code</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">phone_code_hash</span><span class="p">:</span><span class="w"> </span><span class="n">sent</span><span class="o">[</span><span class="s2">&quot;phone_code_hash&quot;</span><span class="o">]</span><span class="p">)</span>
-<span class="k">end</span>
-
-<span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bridge</span><span class="o">.</span><span class="n">auth_export_session</span>
-<span class="nb">puts</span><span class="w"> </span><span class="n">session</span><span class="o">[</span><span class="s2">&quot;session_string&quot;</span><span class="o">]</span><span class="w"> </span><span class="c1"># Store as TD_SESSION_STRING</span>
-
-<span class="n">bridge</span><span class="o">.</span><span class="n">start_calls</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">start</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">join_and_play</span><span class="p">(</span><span class="ss">chat</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@mychat&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">audio</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;song.mp3&quot;</span><span class="p">)</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">pause</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">resume</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">mute</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">unmute</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">stop_call</span>
+<span class="n">bot</span><span class="o">.</span><span class="n">stop</span>
 </pre></div>
 </div>
 <p>Note:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ntgcalls</span></code> media engine alone is not enough to connect Telegram calls.</p></li>
-<li><p>Telegram signaling/auth still needs an MTProto client (here: Telethon through py-tgcalls).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ntgcalls</span></code> is a media engine.</p></li>
+<li><p>This demo performs signaling/auth through TDLib raw calls plus NTgCalls media engine.</p></li>
 </ul>
 </section>
+</section>
+<section id="telegram-user-session-string-ruby">
+<h1>Telegram User Session String (Ruby)<a class="headerlink" href="#telegram-user-session-string-ruby" title="Link to this heading"></a></h1>
+<p>Generate a reusable TDLib user session string:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">TD_API_ID</span><span class="o">=</span><span class="m">12345</span><span class="w"> </span><span class="nv">TD_API_HASH</span><span class="o">=</span>xxxx<span class="w"> </span>ruby<span class="w"> </span>example/generate_user_session.rb
+</pre></div>
+</div>
+<p>After login, script prints:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">TD_USER_SESSION</span><span class="o">=</span>&lt;base64&gt;
+</pre></div>
+</div>
+<p>Reuse:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">TDLib</span><span class="o">::</span><span class="no">UserSession</span><span class="o">.</span><span class="n">client_kwargs</span><span class="p">(</span><span class="no">ENV</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;TD_USER_SESSION&quot;</span><span class="p">))</span>
+<span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">TDLib</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">**</span><span class="n">cfg</span><span class="p">,</span><span class="w"> </span><span class="ss">tdjson_path</span><span class="p">:</span><span class="w"> </span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;TDJSON_PATH&quot;</span><span class="o">]</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">run</span>
+</pre></div>
+</div>
+</section>
+<section id="framework-helpers">
+<h1>Framework Helpers<a class="headerlink" href="#framework-helpers" title="Link to this heading"></a></h1>
+<p>Enums:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="no">GrubY</span><span class="o">::</span><span class="no">Enums</span><span class="o">::</span><span class="no">ParseMode</span><span class="o">::</span><span class="no">MARKDOWN_V2</span>
+<span class="no">GrubY</span><span class="o">::</span><span class="no">Enums</span><span class="o">::</span><span class="no">ChatAction</span><span class="o">::</span><span class="no">TYPING</span>
+<span class="no">GrubY</span><span class="o">::</span><span class="no">Enums</span><span class="o">::</span><span class="no">GroupCallUpdateType</span><span class="o">::</span><span class="no">UPDATE_GROUP_CALL</span>
+</pre></div>
+</div>
+<p>Inline keyboard + WebApp:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">markup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Keyboard</span><span class="o">.</span><span class="n">inline</span><span class="p">(</span><span class="o">[</span>
+<span class="w">  </span><span class="o">[</span><span class="no">GrubY</span><span class="o">::</span><span class="no">Keyboard</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Ping&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ping:1&quot;</span><span class="p">)</span><span class="o">]</span><span class="p">,</span>
+<span class="w">  </span><span class="o">[</span><span class="no">GrubY</span><span class="o">::</span><span class="no">Keyboard</span><span class="o">.</span><span class="n">web_app_button</span><span class="p">(</span><span class="s2">&quot;Open App&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;https://example.com/app&quot;</span><span class="p">)</span><span class="o">]</span>
+<span class="o">]</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Menu&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">reply_markup</span><span class="p">:</span><span class="w"> </span><span class="n">markup</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Bound + Raw:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">bound</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Bound</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+<span class="n">bound</span><span class="o">[</span><span class="ss">:send</span><span class="o">].</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="n">bound</span><span class="o">[</span><span class="ss">:raw</span><span class="o">].</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;getMe&quot;</span><span class="p">)</span>
+<span class="no">GrubY</span><span class="o">::</span><span class="no">Raw</span><span class="o">.</span><span class="n">td_call!</span><span class="p">(</span><span class="n">td_client</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;getMe&quot;</span><span class="w"> </span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Modern-style method coverage:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="c1"># Client/API support snake_case dynamic methods similar to modern libraries</span>
+<span class="n">client</span><span class="o">.</span><span class="n">send_screenshot_notification</span><span class="p">(</span><span class="ss">chat_id</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">get_web_app_url</span><span class="p">(</span><span class="ss">bot_user_id</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="ss">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">compose_text_with_ai</span><span class="p">(</span><span class="ss">text</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fix this&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Bound objects:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="ss">:message</span><span class="p">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">ctx</span><span class="o">|</span>
+<span class="w">  </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="o">.</span><span class="n">message</span>
+<span class="w">  </span><span class="n">msg</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="s2">&quot;pong&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">msg</span><span class="o">.</span><span class="n">reply_photo</span><span class="p">(</span><span class="s2">&quot;file_id_or_url&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">msg</span><span class="o">.</span><span class="n">edit_text</span><span class="p">(</span><span class="s2">&quot;updated&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">msg</span><span class="o">.</span><span class="n">react</span><span class="p">(</span><span class="ss">reaction</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">{</span><span class="w"> </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emoji&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">emoji</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;👍&quot;</span><span class="w"> </span><span class="p">}</span><span class="o">]</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Dynamic type registry:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hundreds of Telegram/modern types are available as BaseObject subclasses</span>
+<span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">VerificationStatus</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;is_verified&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kp">true</span><span class="p">)</span>
+<span class="nb">p</span><span class="w"> </span><span class="n">u</span><span class="o">.</span><span class="n">to_h</span>
+</pre></div>
+</div>
+</section>
+<section id="enumerations">
+<h1>Enumerations<a class="headerlink" href="#enumerations" title="Link to this heading"></a></h1>
+<p>All requested enum groups are available under <code class="docutils literal notranslate"><span class="pre">GrubY::Enums</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BlockList</span></code>, <code class="docutils literal notranslate"><span class="pre">BusinessSchedule</span></code>, <code class="docutils literal notranslate"><span class="pre">ButtonStyle</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatAction</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatEventAction</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatJoinType</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ChatMemberStatus</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatMembersFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatType</span></code>, <code class="docutils literal notranslate"><span class="pre">ClientPlatform</span></code>, <code class="docutils literal notranslate"><span class="pre">FolderColor</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MessageEntityType</span></code>, <code class="docutils literal notranslate"><span class="pre">MessageMediaType</span></code>, <code class="docutils literal notranslate"><span class="pre">MessageOriginType</span></code>, <code class="docutils literal notranslate"><span class="pre">MessageServiceType</span></code>, <code class="docutils literal notranslate"><span class="pre">MessagesFilter</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NextCodeType</span></code>, <code class="docutils literal notranslate"><span class="pre">PaidReactionPrivacy</span></code>, <code class="docutils literal notranslate"><span class="pre">ParseMode</span></code>, <code class="docutils literal notranslate"><span class="pre">PhoneCallDiscardReason</span></code>, <code class="docutils literal notranslate"><span class="pre">PhoneNumberCodeType</span></code>, <code class="docutils literal notranslate"><span class="pre">PollType</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PrivacyKey</span></code>, <code class="docutils literal notranslate"><span class="pre">ProfileColor</span></code>, <code class="docutils literal notranslate"><span class="pre">ProfileTab</span></code>, <code class="docutils literal notranslate"><span class="pre">ReplyColor</span></code>, <code class="docutils literal notranslate"><span class="pre">SentCodeType</span></code>, <code class="docutils literal notranslate"><span class="pre">StoriesPrivacyRules</span></code>, <code class="docutils literal notranslate"><span class="pre">UserStatus</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UpgradedGiftOrigin</span></code>, <code class="docutils literal notranslate"><span class="pre">GiftAttributeType</span></code>, <code class="docutils literal notranslate"><span class="pre">MediaAreaType</span></code>, <code class="docutils literal notranslate"><span class="pre">PrivacyRuleType</span></code>, <code class="docutils literal notranslate"><span class="pre">GiftForResaleOrder</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GiftPurchaseOfferState</span></code>, <code class="docutils literal notranslate"><span class="pre">GiftType</span></code>, <code class="docutils literal notranslate"><span class="pre">PaymentFormType</span></code>, <code class="docutils literal notranslate"><span class="pre">StickerType</span></code>, <code class="docutils literal notranslate"><span class="pre">MaskPointType</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SuggestedPostRefundReason</span></code>, <code class="docutils literal notranslate"><span class="pre">SuggestedPostState</span></code></p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="no">GrubY</span><span class="o">::</span><span class="no">Enums</span><span class="o">::</span><span class="no">ParseMode</span><span class="o">::</span><span class="no">MARKDOWN_V2</span>
+<span class="no">GrubY</span><span class="o">::</span><span class="no">Enums</span><span class="o">::</span><span class="no">ChatType</span><span class="o">::</span><span class="no">SUPERGROUP</span>
+<span class="no">GrubY</span><span class="o">::</span><span class="no">Enums</span><span class="o">::</span><span class="no">ChatMemberStatus</span><span class="o">::</span><span class="no">ADMINISTRATOR</span>
+</pre></div>
+</div>
+</section>
+<section id="decorators">
+<h1>Decorators<a class="headerlink" href="#decorators" title="Link to this heading"></a></h1>
+<p>Pyrogram-style decorators are supported on <code class="docutils literal notranslate"><span class="pre">GrubY::Client</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">on_message</span></code>, <code class="docutils literal notranslate"><span class="pre">on_edited_message</span></code>, <code class="docutils literal notranslate"><span class="pre">on_business_message</span></code>, <code class="docutils literal notranslate"><span class="pre">on_edited_business_message</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_deleted_messages</span></code>, <code class="docutils literal notranslate"><span class="pre">on_deleted_business_messages</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_message_reaction_count</span></code>, <code class="docutils literal notranslate"><span class="pre">on_message_reaction</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_business_connection</span></code>, <code class="docutils literal notranslate"><span class="pre">on_story</span></code>, <code class="docutils literal notranslate"><span class="pre">on_callback_query</span></code>, <code class="docutils literal notranslate"><span class="pre">on_chat_boost</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_chat_join_request</span></code>, <code class="docutils literal notranslate"><span class="pre">on_chat_member_updated</span></code>, <code class="docutils literal notranslate"><span class="pre">on_chosen_inline_result</span></code>, <code class="docutils literal notranslate"><span class="pre">on_inline_query</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_poll</span></code>, <code class="docutils literal notranslate"><span class="pre">on_pre_checkout_query</span></code>, <code class="docutils literal notranslate"><span class="pre">on_purchased_paid_media</span></code>, <code class="docutils literal notranslate"><span class="pre">on_shipping_query</span></code>, <code class="docutils literal notranslate"><span class="pre">on_user_status</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_start</span></code>, <code class="docutils literal notranslate"><span class="pre">on_stop</span></code>, <code class="docutils literal notranslate"><span class="pre">on_connect</span></code>, <code class="docutils literal notranslate"><span class="pre">on_disconnect</span></code>, <code class="docutils literal notranslate"><span class="pre">on_error</span></code>, <code class="docutils literal notranslate"><span class="pre">on_managed_bot</span></code>, <code class="docutils literal notranslate"><span class="pre">on_raw_update</span></code></p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">on_message</span><span class="p">(</span><span class="no">GrubY</span><span class="o">::</span><span class="no">Filters</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="o">|</span>
+<span class="w">  </span><span class="n">message</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="s2">&quot;pong&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">on_callback_query</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">cq</span><span class="o">|</span>
+<span class="w">  </span><span class="n">cq</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</section>
+<section id="handlers">
+<h1>Handlers<a class="headerlink" href="#handlers" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">GrubY::Handlers</span></code> classes are available for <code class="docutils literal notranslate"><span class="pre">add_handler()</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MessageHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">EditedMessageHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">DeletedMessagesHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BusinessMessageHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">EditedBusinessMessageHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">DeletedBusinessMessagesHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BusinessConnectionHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">CallbackQueryHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatBoostHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatJoinRequestHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ChatMemberUpdatedHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">ChosenInlineResultHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">InlineQueryHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MessageReactionCountHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">MessageReactionHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">PollHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PreCheckoutQueryHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">PurchasedPaidMediaHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">ShippingQueryHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StoryHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">UserStatusHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StartHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">StopHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">ConnectHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">DisconnectHandler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">ManagedBotUpdatedHandler</span></code>, <code class="docutils literal notranslate"><span class="pre">RawUpdateHandler</span></code></p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">handler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Handlers</span><span class="o">::</span><span class="no">MessageHandler</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">proc</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="o">|</span><span class="w"> </span><span class="n">message</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+<span class="n">client</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="update-filters">
+<h1>Update Filters<a class="headerlink" href="#update-filters" title="Link to this heading"></a></h1>
+<p>Ruby <code class="docutils literal notranslate"><span class="pre">GrubY::Filters</span></code> now supports:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create(func:,</span> <span class="pre">name:,</span> <span class="pre">**kwargs)</span></code> custom filter creator</p></li>
+<li><p>Boolean composition: <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>, <code class="docutils literal notranslate"><span class="pre">|</span></code>, <code class="docutils literal notranslate"><span class="pre">~</span></code></p></li>
+<li><p>Update filters: <code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">me</span></code>, <code class="docutils literal notranslate"><span class="pre">bot</span></code>, <code class="docutils literal notranslate"><span class="pre">sender_chat</span></code>, <code class="docutils literal notranslate"><span class="pre">incoming</span></code>, <code class="docutils literal notranslate"><span class="pre">outgoing</span></code></p></li>
+<li><p>Content filters: <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">reply</span></code>, <code class="docutils literal notranslate"><span class="pre">forwarded</span></code>, <code class="docutils literal notranslate"><span class="pre">caption</span></code>, <code class="docutils literal notranslate"><span class="pre">audio</span></code>, <code class="docutils literal notranslate"><span class="pre">document</span></code>, <code class="docutils literal notranslate"><span class="pre">photo</span></code>, <code class="docutils literal notranslate"><span class="pre">sticker</span></code>, <code class="docutils literal notranslate"><span class="pre">animation</span></code>, <code class="docutils literal notranslate"><span class="pre">video</span></code>, <code class="docutils literal notranslate"><span class="pre">voice</span></code>, <code class="docutils literal notranslate"><span class="pre">video_note</span></code>, <code class="docutils literal notranslate"><span class="pre">contact</span></code>, <code class="docutils literal notranslate"><span class="pre">location</span></code>, <code class="docutils literal notranslate"><span class="pre">venue</span></code>, <code class="docutils literal notranslate"><span class="pre">web_page</span></code>, <code class="docutils literal notranslate"><span class="pre">poll</span></code>, <code class="docutils literal notranslate"><span class="pre">dice</span></code>, <code class="docutils literal notranslate"><span class="pre">quote</span></code>, <code class="docutils literal notranslate"><span class="pre">media_spoiler</span></code>, <code class="docutils literal notranslate"><span class="pre">story</span></code>, <code class="docutils literal notranslate"><span class="pre">media_group</span></code></p></li>
+<li><p>Chat filters: <code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">channel</span></code>, <code class="docutils literal notranslate"><span class="pre">direct</span></code>, <code class="docutils literal notranslate"><span class="pre">forum</span></code></p></li>
+<li><p>Service/media filters: <code class="docutils literal notranslate"><span class="pre">service</span></code>, <code class="docutils literal notranslate"><span class="pre">media</span></code>, plus specific service keys (<code class="docutils literal notranslate"><span class="pre">new_chat_members</span></code>, <code class="docutils literal notranslate"><span class="pre">pinned_message</span></code>, <code class="docutils literal notranslate"><span class="pre">video_chat_started</span></code>, etc.)</p></li>
+<li><p>Parameterized filters: <code class="docutils literal notranslate"><span class="pre">command(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">regex(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">user(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">chat(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">topic(...)</span></code></p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Filters</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="sx">%w[start help]</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">Filters</span><span class="o">.</span><span class="n">private</span>
+<span class="n">client</span><span class="o">.</span><span class="n">on_message</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="o">|</span><span class="w"> </span><span class="n">msg</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Raw group-call objects:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">igc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">input_group_call</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">access_hash</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">input_peer_self</span>
+<span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">to_data_json</span><span class="p">({</span><span class="w"> </span><span class="ss">ufrag</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;x&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="n">join</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">join_group_call</span><span class="p">(</span><span class="ss">call</span><span class="p">:</span><span class="w"> </span><span class="n">igc</span><span class="p">,</span><span class="w"> </span><span class="ss">params</span><span class="p">:</span><span class="w"> </span><span class="n">json</span><span class="p">,</span><span class="w"> </span><span class="ss">join_as</span><span class="p">:</span><span class="w"> </span><span class="n">peer</span><span class="p">)</span>
+<span class="n">leave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">leave_group_call</span><span class="p">(</span><span class="ss">call</span><span class="p">:</span><span class="w"> </span><span class="n">igc</span><span class="p">,</span><span class="w"> </span><span class="ss">source</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="steps-to-setup-tdjson">
 <h1>Steps to Setup TDJSON:<a class="headerlink" href="#steps-to-setup-tdjson" title="Link to this heading"></a></h1>
@@ -286,6 +405,8 @@ Used <code class="docutils literal notranslate"><span class="pre">Telethon</span
 <h1>Examples:<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">example/bot.rb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/ntgcalls.rb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/generate_user_session.rb</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">example/tdlib.rb</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">example/userbot.rb</span></code> (phone/QR login)</p></li>
 </ul>
