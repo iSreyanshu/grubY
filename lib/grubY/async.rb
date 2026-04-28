@@ -1,4 +1,4 @@
-﻿module GrubY
+module GrubY
   class Async
     def self.run(&block)
       Thread.new do
@@ -11,4 +11,3 @@
     end
   end
 end
-
