@@ -42,7 +42,7 @@ gem install ./grubY-0.2.0.gem
 require_relative "lib/grubY"
 
 client = GrubY::Client.new("BOT_TOKEN")
-client.on(:message, GrubY::Filters.command("start")) { |ctx| ctx.reply("Bot is alive") }
+client.on(:message, GrubY::Filters.command("start")) { |ctx| ctx.reply("Heya; Started!") }
 client.run
 ```
 
