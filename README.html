@@ -266,14 +266,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 <span class="no">GrubY</span><span class="o">::</span><span class="no">Raw</span><span class="o">.</span><span class="n">td_call!</span><span class="p">(</span><span class="n">td_client</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;getMe&quot;</span><span class="w"> </span><span class="p">})</span>
 </pre></div>
 </div>
-<p>Modern-style method coverage:</p>
-<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="c1"># Client/API support snake_case dynamic methods similar to modern libraries</span>
-<span class="n">client</span><span class="o">.</span><span class="n">send_screenshot_notification</span><span class="p">(</span><span class="ss">chat_id</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">)</span>
-<span class="n">client</span><span class="o">.</span><span class="n">get_web_app_url</span><span class="p">(</span><span class="ss">bot_user_id</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="ss">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
-<span class="n">client</span><span class="o">.</span><span class="n">compose_text_with_ai</span><span class="p">(</span><span class="ss">text</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fix this&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Bound objects:</p>
+<p>Bound Objects:</p>
 <div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="ss">:message</span><span class="p">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">ctx</span><span class="o">|</span>
 <span class="w">  </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="o">.</span><span class="n">message</span>
 <span class="w">  </span><span class="n">msg</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="s2">&quot;pong&quot;</span><span class="p">)</span>
@@ -284,7 +277,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 </pre></div>
 </div>
 <p>Dynamic type registry:</p>
-<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hundreds of Telegram/modern types are available as BaseObject subclasses</span>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hundreds of Telegram types are available as BaseObject subclasses</span>
 <span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">VerificationStatus</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;is_verified&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kp">true</span><span class="p">)</span>
 <span class="nb">p</span><span class="w"> </span><span class="n">u</span><span class="o">.</span><span class="n">to_h</span>
 </pre></div>
@@ -292,7 +285,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 </section>
 <section id="enumerations">
 <h1>Enumerations<a class="headerlink" href="#enumerations" title="Link to this heading"></a></h1>
-<p>All requested enum groups are available under <code class="docutils literal notranslate"><span class="pre">GrubY::Enums</span></code>:</p>
+<p>Enum groups are available under <code class="docutils literal notranslate"><span class="pre">GrubY::Enums</span></code>:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">BlockList</span></code>, <code class="docutils literal notranslate"><span class="pre">BusinessSchedule</span></code>, <code class="docutils literal notranslate"><span class="pre">ButtonStyle</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatAction</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatEventAction</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatJoinType</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ChatMemberStatus</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatMembersFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">ChatType</span></code>, <code class="docutils literal notranslate"><span class="pre">ClientPlatform</span></code>, <code class="docutils literal notranslate"><span class="pre">FolderColor</span></code></p></li>
@@ -370,7 +363,7 @@ gem<span class="w"> </span>install<span class="w"> </span>./grubY-0.2.0.gem
 <span class="n">client</span><span class="o">.</span><span class="n">on_message</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">|</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="o">|</span><span class="w"> </span><span class="n">msg</span><span class="o">.</span><span class="n">reply_text</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
-<p>Raw group-call objects:</p>
+<p>Raw Group-Call Objects:</p>
 <div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">igc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">input_group_call</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">access_hash</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
 <span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">input_peer_self</span>
 <span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">GrubY</span><span class="o">::</span><span class="no">RawTypes</span><span class="o">.</span><span class="n">to_data_json</span><span class="p">({</span><span class="w"> </span><span class="ss">ufrag</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;x&quot;</span><span class="w"> </span><span class="p">})</span>

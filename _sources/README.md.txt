@@ -181,16 +181,7 @@ bound[:raw].call("getMe")
 GrubY::Raw.td_call!(td_client, { "@type": "getMe" })
 ```
 
-Modern-style method coverage:
-
-```ruby
-# Client/API support snake_case dynamic methods similar to modern libraries
-client.send_screenshot_notification(chat_id: 123)
-client.get_web_app_url(bot_user_id: 123, url: "https://example.com")
-client.compose_text_with_ai(text: "fix this")
-```
-
-Bound objects:
+Bound Objects:
 
 ```ruby
 client.on(:message) do |ctx|
@@ -205,14 +196,14 @@ end
 Dynamic type registry:
 
 ```ruby
-# Hundreds of Telegram/modern types are available as BaseObject subclasses
+# Hundreds of Telegram types are available as BaseObject subclasses
 u = GrubY::VerificationStatus.new("is_verified" => true)
 p u.to_h
 ```
 
 ## Enumerations
 
-All requested enum groups are available under `GrubY::Enums`:
+Enum groups are available under `GrubY::Enums`:
 
 - `BlockList`, `BusinessSchedule`, `ButtonStyle`, `ChatAction`, `ChatEventAction`, `ChatJoinType`
 - `ChatMemberStatus`, `ChatMembersFilter`, `ChatType`, `ClientPlatform`, `FolderColor`
@@ -295,7 +286,7 @@ f = GrubY::Filters.command(%w[start help]) & GrubY::Filters.private
 client.on_message(f) { |app, msg| msg.reply_text("ok") }
 ```
 
-Raw group-call objects:
+Raw Group-Call Objects:
 
 ```ruby
 igc = GrubY::RawTypes.input_group_call(id: 1, access_hash: 2)
