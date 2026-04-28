@@ -38,14 +38,14 @@ module GrubY
       :video_chat_ended, :video_chat_participants_invited, :web_app_data,
       :reply_markup
 
-    def initialize(data)
-      super(data)
-      @from = User.new(@from) if @from.is_a?(Hash)
-      @chat = Chat.new(@chat) if @chat.is_a?(Hash)
-      @sender_chat = Chat.new(@sender_chat) if @sender_chat.is_a?(Hash)
-      @sender_business_bot = User.new(@sender_business_bot) if @sender_business_bot.is_a?(Hash)
-      @via_bot = User.new(@via_bot) if @via_bot.is_a?(Hash)
-      @reply_to_message = Message.new(@reply_to_message) if @reply_to_message.is_a?(Hash)
+    def initialize(data, api: nil, client: nil)
+      super(data, api: api, client: client)
+      @from = User.new(@from, api: api, client: client) if @from.is_a?(Hash)
+      @chat = Chat.new(@chat, api: api, client: client) if @chat.is_a?(Hash)
+      @sender_chat = Chat.new(@sender_chat, api: api, client: client) if @sender_chat.is_a?(Hash)
+      @sender_business_bot = User.new(@sender_business_bot, api: api, client: client) if @sender_business_bot.is_a?(Hash)
+      @via_bot = User.new(@via_bot, api: api, client: client) if @via_bot.is_a?(Hash)
+      @reply_to_message = Message.new(@reply_to_message, api: api, client: client) if @reply_to_message.is_a?(Hash)
       @external_reply = ExternalReplyInfo.new(@external_reply) if @external_reply.is_a?(Hash)
       @quote = TextQuote.new(@quote) if @quote.is_a?(Hash)
       @reply_to_story = Story.new(@reply_to_story) if @reply_to_story.is_a?(Hash)
@@ -63,8 +63,233 @@ module GrubY
       @contact = Contact.new(@contact) if @contact.is_a?(Hash)
       @dice = Dice.new(@dice) if @dice.is_a?(Hash)
       @poll = Poll.new(@poll) if @poll.is_a?(Hash)
-      @new_chat_members = Array(@new_chat_members).map { |u| User.new(u) }
-      @left_chat_member = User.new(@left_chat_member) if @left_chat_member.is_a?(Hash)
+      @new_chat_members = Array(@new_chat_members).map { |u| User.new(u, api: api, client: client) }
+      @left_chat_member = User.new(@left_chat_member, api: api, client: client) if @left_chat_member.is_a?(Hash)
+    end
+
+    def reply(text = nil, **opts)
+      call_api("sendMessage", { chat_id: chat_id!, text: text.to_s, reply_to_message_id: message_id }.merge(opts))
+    end
+
+    def reply_text(text = nil, **opts)
+      reply(text, **opts)
+    end
+
+    def answer(text = nil, **opts)
+      reply(text, **opts)
+    end
+
+    def edit_text(text, **opts)
+      call_api("editMessageText", { chat_id: chat_id!, message_id: message_id, text: text.to_s }.merge(opts))
+    end
+
+    alias edit edit_text
+
+    def edit_caption(caption, **opts)
+      call_api("editMessageCaption", { chat_id: chat_id!, message_id: message_id, caption: caption.to_s }.merge(opts))
+    end
+
+    def edit_media(media, **opts)
+      call_api("editMessageMedia", { chat_id: chat_id!, message_id: message_id, media: media }.merge(opts))
+    end
+
+    def edit_checklist(checklist, **opts)
+      call_api("editMessageChecklist", { chat_id: chat_id!, message_id: message_id, checklist: checklist }.merge(opts))
+    end
+
+    def edit_reply_markup(reply_markup = nil, **opts)
+      call_api("editMessageReplyMarkup", { chat_id: chat_id!, message_id: message_id, reply_markup: reply_markup }.merge(opts))
+    end
+
+    def edit_live_location(latitude:, longitude:, **opts)
+      call_api("editMessageLiveLocation", { chat_id: chat_id!, message_id: message_id, latitude: latitude, longitude: longitude }.merge(opts))
+    end
+
+    def stop_live_location(**opts)
+      call_api("stopMessageLiveLocation", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def forward(to_chat_id:, from_chat_id: chat_id!, **opts)
+      call_api("forwardMessage", { chat_id: to_chat_id, from_chat_id: from_chat_id, message_id: message_id }.merge(opts))
+    end
+
+    def copy(to_chat_id:, from_chat_id: chat_id!, **opts)
+      call_api("copyMessage", { chat_id: to_chat_id, from_chat_id: from_chat_id, message_id: message_id }.merge(opts))
+    end
+
+    def copy_media_group(to_chat_id:, from_chat_id: chat_id!, **opts)
+      call_api("copyMessages", { chat_id: to_chat_id, from_chat_id: from_chat_id, message_ids: [message_id] }.merge(opts))
+    end
+
+    def delete(**opts)
+      call_api("deleteMessage", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def react(reaction:, is_big: false)
+      call_api("setMessageReaction", { chat_id: chat_id!, message_id: message_id, reaction: reaction, is_big: is_big })
+    end
+
+    def retract_vote(**opts)
+      call_api("stopPoll", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def vote(option_ids, **opts)
+      call_api("sendPoll", { chat_id: chat_id!, options: option_ids }.merge(opts))
+    end
+
+    def pin(**opts)
+      call_api("pinChatMessage", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def unpin(**opts)
+      call_api("unpinChatMessage", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def read
+      call_raw_api("readChatHistory", { chat_id: chat_id! })
+    end
+
+    def view
+      call_raw_api("viewMessages", { chat_id: chat_id!, message_ids: [message_id] })
+    end
+
+    def pay(**opts)
+      call_raw_api("sendPaymentForm", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def accept_gift_purchase_offer(**opts)
+      call_raw_api("processGiftPurchaseOffer", { message_id: message_id, accept: true }.merge(opts))
+    end
+
+    def reject_gift_purchase_offer(**opts)
+      call_raw_api("processGiftPurchaseOffer", { message_id: message_id, accept: false }.merge(opts))
+    end
+
+    def summarize(summary_language_code: "en")
+      call_raw_api("summarizeMessage", { chat_id: chat_id!, message_id: message_id, summary_language_code: summary_language_code })
+    end
+
+    def fix_text_with_ai(**opts)
+      call_raw_api("fixTextWithAi", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def compose_text_with_ai(**opts)
+      call_raw_api("composeTextWithAi", { chat_id: chat_id!, message_id: message_id }.merge(opts))
+    end
+
+    def reply_inline_bot_result(result_id:, query_id:, **opts)
+      call_raw_api("sendInlineBotResult", { chat_id: chat_id!, query_id: query_id, result_id: result_id }.merge(opts))
+    end
+
+    def answer_inline_bot_result(result_id:, query_id:, **opts)
+      reply_inline_bot_result(result_id: result_id, query_id: query_id, **opts)
+    end
+
+    def get_media_group
+      return nil if media_group_id.to_s.empty?
+
+      call_raw_api("getMediaGroup", { chat_id: chat_id!, message_id: message_id })
+    end
+
+    def reply_chat_action(action)
+      call_api("sendChatAction", { chat_id: chat_id!, action: action })
+    end
+
+    def click
+      raise NotImplementedError, "click() requires callback query context"
+    end
+
+    def download(file_name = "file.dat")
+      file_id = resolve_file_id
+      raise ArgumentError, "message has no downloadable media" if file_id.nil?
+
+      f = call_api("getFile", { file_id: file_id })
+      call_raw_api("getFile", { file_id: file_id }) unless f
+      file_path = f && f["file_path"]
+      raise ArgumentError, "file_path not found for file_id=#{file_id}" if file_path.to_s.empty?
+
+      @api.download_file(file_path, file_name)
+      file_name
+    end
+
+    SENDERS = {
+      animation: "sendAnimation",
+      audio: "sendAudio",
+      contact: "sendContact",
+      document: "sendDocument",
+      game: "sendGame",
+      invoice: "sendInvoice",
+      location: "sendLocation",
+      media_group: "sendMediaGroup",
+      photo: "sendPhoto",
+      poll: "sendPoll",
+      dice: "sendDice",
+      sticker: "sendSticker",
+      venue: "sendVenue",
+      video: "sendVideo",
+      video_note: "sendVideoNote",
+      voice: "sendVoice",
+      paid_media: "sendPaidMedia",
+      cached_media: "sendDocument",
+      checklist: "sendChecklist"
+    }.freeze
+
+    SENDERS.each do |name, method_name|
+      define_method("reply_#{name}") do |payload = nil, **opts|
+        params = { chat_id: chat_id!, reply_to_message_id: message_id }.merge(opts)
+        params = attach_payload(name, params, payload)
+        call_api(method_name, params)
+      end
+
+      define_method("answer_#{name}") do |payload = nil, **opts|
+        public_send("reply_#{name}", payload, **opts)
+      end
+    end
+
+    private
+
+    def chat_id!
+      @chat&.id || self["chat"]&.dig("id") || raise(ArgumentError, "message has no chat id")
+    end
+
+    def attach_payload(kind, params, payload)
+      case kind
+      when :animation, :audio, :document, :photo, :sticker, :video, :video_note, :voice
+        params.merge(kind => payload)
+      when :contact
+        params.merge(payload.is_a?(Hash) ? payload : {})
+      when :game
+        params.merge(game_short_name: payload)
+      when :invoice
+        params.merge(payload.is_a?(Hash) ? payload : {})
+      when :location
+        params.merge(payload.is_a?(Hash) ? payload : {})
+      when :media_group
+        params.merge(media: payload)
+      when :poll
+        params.merge(payload.is_a?(Hash) ? payload : {})
+      when :venue
+        params.merge(payload.is_a?(Hash) ? payload : {})
+      when :paid_media
+        params.merge(payload.is_a?(Hash) ? payload : {})
+      when :cached_media
+        params.merge(document: payload)
+      when :checklist
+        params.merge(checklist: payload)
+      else
+        params
+      end
+    end
+
+    def resolve_file_id
+      return @document.file_id if @document&.respond_to?(:file_id)
+      return @audio.file_id if @audio&.respond_to?(:file_id)
+      return @video.file_id if @video&.respond_to?(:file_id)
+      return @voice.file_id if @voice&.respond_to?(:file_id)
+      return @animation.file_id if @animation&.respond_to?(:file_id)
+      return @photo.last.file_id if @photo.is_a?(Array) && @photo.last&.respond_to?(:file_id)
+
+      nil
     end
   end
 end
