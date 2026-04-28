@@ -1,4 +1,4 @@
-﻿module GrubY
+module GrubY
   class Retry
     def self.call(times=3)
       tries = 0
@@ -12,4 +12,3 @@
     end
   end
 end
-
