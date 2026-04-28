@@ -125,7 +125,7 @@ client.on_message do |message|
     message_id: message["id"],
     input_message_content: {
       "@type" => "inputMessageText",
-      "text" => { "@type" => "formattedText", "text" => "Hi, this is from GrubY TDLib userbot!" }
+      "text" => { "@type" => "formattedText", "text" => "Hey, This is from GrubY TDLib Userbot!" }
     }
   )
 end
