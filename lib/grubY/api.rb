@@ -154,6 +154,18 @@ module GrubY
       request("sendVideoNote", { chat_id: chat_id, video_note: video_note }.merge(opts))
     end
 
+    def send_sticker(chat_id, sticker, **opts)
+      request("sendSticker", { chat_id: chat_id, sticker: sticker }.merge(opts))
+    end
+
+    def send_cached_media(chat_id, file_id, **opts)
+      request("sendDocument", { chat_id: chat_id, document: file_id }.merge(opts))
+    end
+
+    def send_screenshot_notification(chat_id, **opts)
+      request("sendScreenshotNotification", { chat_id: chat_id }.merge(opts))
+    end
+
     def send_paid_media(chat_id, star_count, media, **opts)
       request("sendPaidMedia", {
         chat_id: chat_id,
@@ -206,6 +218,18 @@ module GrubY
         chat_id: chat_id,
         checklist: checklist
       }.merge(opts))
+    end
+
+    def get_web_app_link_url(**opts)
+      request("getWebAppLinkUrl", opts)
+    end
+
+    def get_web_app_url(**opts)
+      request("getWebAppUrl", opts)
+    end
+
+    def open_web_app(**opts)
+      request("openWebApp", opts)
     end
 
     def send_dice(chat_id, **opts)
