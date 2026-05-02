@@ -1,4 +1,4 @@
-grubY
+gruubY
 =====
 .. toctree::
    :maxdepth: 2
