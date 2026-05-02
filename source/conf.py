@@ -1,6 +1,6 @@
 import sphinx_rtd_theme
 
-project = 'grubY'
+project = 'gruubY'
 copyright = '2026, Sreyanshu'
 author = 'Sreyanshu'
 

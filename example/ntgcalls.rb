@@ -1,4 +1,4 @@
-require_relative "../lib/grubY"
+require_relative "../lib/gruubY"
 require "json"
 
 # Usage:

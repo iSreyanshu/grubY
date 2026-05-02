@@ -1,4 +1,4 @@
-require_relative "../lib/grubY"
+require_relative "../lib/gruubY"
 
 def prompt(label)
   print label

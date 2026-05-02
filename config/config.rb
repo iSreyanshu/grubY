@@ -1,5 +1,5 @@
 module Config
-  TOKEN = "YOUR_BOT_TOKEN"
+  TOKEN = ""
   WEBHOOK_PATH = "/webhook"
   PORT = 4545
 end

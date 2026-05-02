@@ -6,12 +6,12 @@ CLEAN.include(*Dir["*.gem"])
 
 desc "Build gem package"
 task :build do
-  sh "gem build grubY.gemspec"
+  sh "gem build gruubY.gemspec"
 end
 
 desc "Install built gem locally"
 task install_local: :build do
-  gem_file = Dir["grubY-*.gem"].max_by { |f| File.mtime(f) }
+  gem_file = Dir["gruubY-*.gem"].max_by { |f| File.mtime(f) }
   abort "No gem package found" unless gem_file
 
   sh "gem install #{gem_file}"
@@ -28,7 +28,7 @@ task setup: [:bundle_install]
 namespace :ci do
   desc "Minimal smoke check for gem load"
   task :smoke do
-    ruby "-e", "require_relative 'lib/grubY'; puts 'grubY load ok'"
+    ruby "-e", "require_relative 'lib/gruubY'; puts 'gruubY load ok'"
   end
 end
 

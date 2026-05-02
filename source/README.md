@@ -8,7 +8,7 @@ A Ruby Telegram wrapper with:
 ## Install
 
 ```bash
-gem install grubY
+gem install gruubY
 ```
 
 For local development:
@@ -21,7 +21,7 @@ From this repo directly:
 
 ```bash
 rake build
-gem install ./grubY-0.2.0.gem
+gem install ./gruubY-0.2.0.gem
 ```
 
 ## What Is New
@@ -39,7 +39,7 @@ gem install ./grubY-0.2.0.gem
 ## BotAPI Quick Start
 
 ```ruby
-require_relative "lib/grubY"
+require_relative "lib/gruubY"
 
 client = GrubY::Client.new("BOT_TOKEN")
 client.on(:message, GrubY::Filters.command("start")) { |ctx| ctx.reply("Heya; Started!") }

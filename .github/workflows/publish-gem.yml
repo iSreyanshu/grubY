@@ -23,7 +23,7 @@ jobs:
           bundler-cache: true
 
       - name: Build gem
-        run: gem build grubY.gemspec
+        run: gem build gruubY.gemspec
 
       - name: Publish to RubyGems
         env:

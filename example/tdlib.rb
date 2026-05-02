@@ -1,4 +1,4 @@
-require_relative "../lib/grubY"
+require_relative "../lib/gruubY"
 
 # Set these in your environment before running:
 # TD_API_ID=12345

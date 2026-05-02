@@ -1,10 +1,11 @@
-require_relative "../lib/grubY"
+require_relative "../lib/gruubY"
 require_relative "../config/config"
 
 client = GrubY::Client.new(Config::TOKEN)
 gm = client.group_manager
 
-client.use_plugin("../plugins/logger.rb")
+plugin_file = File.join(__dir__, '../plugins/logger.rb')
+client.use_plugin(plugin_file)
 
 HELP = <<~TXT
   Commands:

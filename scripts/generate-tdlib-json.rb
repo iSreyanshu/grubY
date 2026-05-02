@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "optparse"
-require_relative "../lib/grubY/tdlib/schema_builder"
+require_relative "../lib/gruubY/tdlib/schema_builder"
 
 options = {
   src: "https://raw.githubusercontent.com/tdlib/td/refs/heads/master/td/generate/scheme/td_api.tl",
