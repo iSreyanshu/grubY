@@ -21,7 +21,7 @@ From this repo directly:
 
 ```bash
 rake build
-gem install ./gruubY-0.2.0.gem
+gem install ./gruubY-0.2.2.gem
 ```
 
 ## What Is New
